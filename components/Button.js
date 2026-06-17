@@ -1,6 +1,6 @@
-import { createElement, defineComponent } from '../framework/index.js'
+import { createElement, defineComponent, registry } from '../framework/index.js'
 
-export default defineComponent({
+const Button = defineComponent({
   name: 'Button',
   props: {
     label: { type: 'string', required: true },
@@ -11,3 +11,6 @@ export default defineComponent({
     return createElement('button', { class: `btn btn--${variant}`, onclick: onClick }, label)
   },
 })
+
+registry.register(Button)
+export default Button

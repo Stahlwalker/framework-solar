@@ -1,7 +1,7 @@
-import { createElement, useState, defineComponent } from '../framework/index.js'
+import { createElement, useState, defineComponent, registry } from '../framework/index.js'
 import Button from './Button.js'
 
-export default defineComponent({
+const Counter = defineComponent({
   name: 'Counter',
   props: {
     initialCount: { type: 'number', default: 0 },
@@ -18,3 +18,6 @@ export default defineComponent({
     )
   },
 })
+
+registry.register(Counter)
+export default Counter

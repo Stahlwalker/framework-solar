@@ -20,8 +20,16 @@
     .btn--primary { background: #5b5ef7; color: #fff; }
     .btn--secondary { background: #2a2a2a; color: #e0e0e0; border: 1px solid #444; }
 
-    #error-demo { margin-top: 1rem; }
-    #error-output { background: #1a0a0a; border: 1px solid #5a1a1a; color: #ff6b6b; border-radius: 6px; padding: 1rem; font-family: monospace; font-size: 0.8rem; white-space: pre; margin-top: 0.5rem; }
+    .card { border: 1px solid #333; border-radius: 8px; padding: 1.25rem; max-width: 320px; }
+    .card__title { margin: 0 0 0.5rem; font-size: 1rem; font-weight: 600; }
+    .card__body { margin: 0 0 1rem; font-size: 0.875rem; color: #aaa; }
+    .card__action { display: flex; }
+
+    .code-block { background: #1a1a1a; border: 1px solid #2a2a2a; color: #a0c8ff; border-radius: 6px; padding: 1rem; font-family: monospace; font-size: 0.8rem; white-space: pre; overflow-x: auto; margin-top: 0.5rem; }
+    .error-block { background: #1a0a0a; border: 1px solid #5a1a1a; color: #ff6b6b; border-radius: 6px; padding: 1rem; font-family: monospace; font-size: 0.8rem; white-space: pre; margin-top: 0.5rem; }
+
+    .label { font-size: 0.8rem; color: #555; margin: 0 0 0.4rem; }
+    .gap { margin-bottom: 1rem; }
   </style>
 </head>
 <body>
@@ -32,12 +40,34 @@
 
   <h2>Phase 4: Contract validation</h2>
   <div class="demo-section">
-    <p style="margin:0 0 0.75rem;font-size:0.875rem;color:#aaa;">Passing a number where string is required:</p>
-    <div id="error-output"></div>
+    <p class="label">Passing a number where string is required:</p>
+    <div class="error-block" id="error-output"></div>
   </div>
 
   <h2>Phase 5–6: Fetch effect + batched updates</h2>
   <div class="demo-section" id="effect-root"></div>
+
+  <h2>Phase 7: Component registry manifest</h2>
+  <div class="demo-section">
+    <p class="label">registry.manifest() — machine-readable schema for all registered components:</p>
+    <div class="code-block" id="registry-output"></div>
+  </div>
+
+  <h2>Phase 8: Compact h() notation</h2>
+  <div class="demo-section">
+    <p class="label">Tree built with array notation — no createElement calls:</p>
+    <div id="h-root" class="gap"></div>
+    <p class="label">Registry-aware: h(['Button', ...]) dispatches to the registered Button component:</p>
+    <div id="h-component-root"></div>
+  </div>
+
+  <h2>Phase 9: Slots (typed component composition)</h2>
+  <div class="demo-section">
+    <p class="label">Valid — Card receives a Button vnode in its action slot:</p>
+    <div id="slot-valid-root" class="gap"></div>
+    <p class="label">Invalid — Card receives a plain createElement vnode (no _source tag):</p>
+    <div class="error-block" id="slot-error-output"></div>
+  </div>
 
   <script type="module" src="./main.js"></script>
 </body>

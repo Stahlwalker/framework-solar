@@ -2,12 +2,32 @@ import { setCurrentComponent, clearCurrentComponent } from '../core/hooks.js'
 import { setFlushCallback } from '../core/scheduler.js'
 import { createDOMNode } from '../core/render.js'
 import { diff } from '../core/diff.js'
+import { registry } from '../registry.js'
+import { ContractError } from '../contract/ContractError.js'
 
 // registry: component instance → { fn, props, hooks, vnode, domParent, domIndex }
 const instances = new Map()
 let instanceCounter = 0
 
 export function mountComponent(fn, props, container, index = 0) {
+  if (!fn._isComponent) {
+    throw new ContractError({
+      component: fn.displayName || fn.name || 'Unknown',
+      prop: null,
+      expected: 'a component created with defineComponent()',
+      received: 'plain function',
+      fix: 'Wrap this function with defineComponent() before mounting',
+    })
+  }
+  if (!registry.has(fn.displayName)) {
+    throw new ContractError({
+      component: fn.displayName,
+      prop: null,
+      expected: 'component to be registered via registry.register()',
+      received: 'unregistered component',
+      fix: `Call registry.register(${fn.displayName}) before mounting`,
+    })
+  }
   const id = ++instanceCounter
   const instance = {
     id,

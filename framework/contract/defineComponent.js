@@ -8,7 +8,9 @@ export function defineComponent(config) {
 
   function ComponentFn(rawProps = {}) {
     const resolvedProps = validateProps(name, propSchema, rawProps)
-    return render(resolvedProps)
+    const vnode = render(resolvedProps)
+    if (vnode && typeof vnode === 'object') vnode._source = name
+    return vnode
   }
 
   ComponentFn.displayName = name
