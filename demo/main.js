@@ -1,4 +1,7 @@
-import { createElement, useState, useEffect, defineComponent, registry, h, render } from '../framework/index.js'
+import {
+  createElement, useState, useResource, useSubscription, onMount, onUnmount,
+  defineComponent, registry, h, render,
+} from '../framework/index.js'
 import { mountComponent } from '../framework/runtime/reconciler.js'
 import Counter from '../components/Counter.js'
 import Button from '../components/Button.js'
@@ -7,7 +10,7 @@ import Card from '../components/Card.js'
 // --- Phase 1–3: Counter with hooks ---
 mountComponent(Counter, { initialCount: 0 }, document.getElementById('counter-root'))
 
-// --- Phase 4: Contract validation error ---
+// --- Phase 4: Structured ContractError ---
 const errorOutput = document.getElementById('error-output')
 try {
   Button({ label: 42, onClick: () => {}, variant: 'primary' })
@@ -17,66 +20,104 @@ try {
     : e.message
 }
 
-// --- Phase 5–6: Effect + batched state updates ---
-const BatchDemo = defineComponent({
-  name: 'BatchDemo',
+// --- Phase 5: useResource — async fetching with cancellation ---
+const ResourceDemo = defineComponent({
+  name: 'ResourceDemo',
   props: {},
   render() {
-    const [a, setA] = useState(0)
-    const [b, setB] = useState(0)
-    const [log, setLog] = useState('Waiting...')
+    const [userId, setUserId] = useState(1)
 
-    useEffect({
-      deps: { a, b },
-      run() {
-        const timeout = setTimeout(() => {
-          setA(v => v + 1)
-          setB(v => v + 1)
-          setLog(`Fetched at ${new Date().toLocaleTimeString()} — a:${a + 1} b:${b + 1}`)
-        }, 1200)
-        return () => clearTimeout(timeout)
+    const { data, loading, error } = useResource({
+      key: userId,
+      fetch: async (signal) => {
+        await new Promise((resolve, reject) => {
+          const t = setTimeout(resolve, 700)
+          signal.addEventListener('abort', () => { clearTimeout(t); reject(new Error('aborted')) })
+        })
+        return { id: userId, name: `User ${userId}`, email: `user${userId}@example.com` }
       },
     })
 
+    const status = loading
+      ? 'Loading...'
+      : error
+        ? `Error: ${error.message}`
+        : `${data.name} — ${data.email}`
+
     return createElement('div', {},
-      createElement('p', { style: 'margin:0 0 0.5rem;color:#aaa;font-size:0.875rem' }, log),
-      createElement('code', {}, `a=${a}  b=${b}`),
+      createElement('p', { style: 'margin:0 0 1rem;font-size:0.875rem;color:#aaa' }, status),
+      createElement('div', { style: 'display:flex;gap:0.5rem' },
+        Button({ label: '← Prev', onClick: () => setUserId(id => Math.max(1, id - 1)), variant: 'secondary' }),
+        Button({ label: 'Next →', onClick: () => setUserId(id => id + 1), variant: 'primary' }),
+      ),
     )
   },
 })
 
-registry.register(BatchDemo)
-mountComponent(BatchDemo, {}, document.getElementById('effect-root'))
+registry.register(ResourceDemo)
+mountComponent(ResourceDemo, {}, document.getElementById('resource-root'))
+
+// --- Phase 6: useSubscription + lifecycle ---
+const LifecycleDemo = defineComponent({
+  name: 'LifecycleDemo',
+  props: {},
+  render() {
+    const [width, setWidth] = useState(window.innerWidth)
+    const [log, setLog] = useState([])
+
+    onMount(() => setLog(l => [...l, 'mounted']))
+    onUnmount(() => console.log('LifecycleDemo unmounted'))
+
+    useSubscription({
+      source: window,
+      event: 'resize',
+      handler: () => setWidth(window.innerWidth),
+    })
+
+    return createElement('div', {},
+      createElement('p', { style: 'margin:0 0 0.5rem;font-size:0.875rem;color:#aaa' },
+        `Window width: ${width}px`
+      ),
+      createElement('p', { style: 'margin:0;font-size:0.875rem;color:#555' },
+        `Lifecycle: ${log.join(' → ')}`
+      ),
+    )
+  },
+})
+
+registry.register(LifecycleDemo)
+mountComponent(LifecycleDemo, {}, document.getElementById('lifecycle-root'))
 
 // --- Phase 7: Registry manifest ---
 document.getElementById('registry-output').textContent = registry.manifest()
 
 // --- Phase 8: Compact h() notation ---
-// plain DOM tree via array notation
-const plainTree = h(['div', { class: 'counter' },
-  ['p', { style: 'margin:0 0 0.5rem;color:#aaa;font-size:0.875rem' }, 'Built with h() — pure array notation'],
-  ['div', { style: 'display:flex;gap:0.5rem' },
-    ['button', { class: 'btn btn--secondary' }, '-'],
-    ['button', { class: 'btn btn--primary' }, '+'],
-  ],
-])
-render(plainTree, document.getElementById('h-root'))
+render(
+  h(['div', { style: 'display:flex;flex-direction:column;gap:0.75rem' },
+    ['p', { style: 'margin:0;font-size:0.875rem;color:#aaa' }, 'Built with h() — pure array notation'],
+    ['div', { style: 'display:flex;gap:0.5rem' },
+      ['button', { class: 'btn btn--secondary' }, '-'],
+      ['button', { class: 'btn btn--primary' }, '+'],
+    ],
+  ]),
+  document.getElementById('h-root')
+)
 
-// registry-aware dispatch: 'Button' string resolves to the registered component
-const hButton = h(['Button', { label: 'Via h() registry dispatch', onClick: () => alert('h() works!'), variant: 'secondary' }])
-render(hButton, document.getElementById('h-component-root'))
+render(
+  h(['Button', { label: 'Via h() registry dispatch', onClick: () => alert('h() works!'), variant: 'secondary' }]),
+  document.getElementById('h-component-root')
+)
 
 // --- Phase 9: Slots ---
-// valid case
-const slotValidRoot = document.getElementById('slot-valid-root')
-const validCard = Card({
-  title: 'Slot demo',
-  body: 'This card received a typed Button in its action slot.',
-  action: Button({ label: 'Action', onClick: () => alert('slot works!'), variant: 'primary' }),
-})
-render(validCard, slotValidRoot)
+render(
+  Card({
+    title: 'Slot demo',
+    body: 'This card received a typed Button in its action slot.',
+    action: Button({ label: 'Action', onClick: () => alert('slot works!'), variant: 'primary' }),
+  }),
+  document.getElementById('slot-valid-root')
+)
 
-// invalid case — plain createElement has no _source tag
 const slotErrorOutput = document.getElementById('slot-error-output')
 try {
   Card({

@@ -10,7 +10,7 @@ Every system in this space converges on the same architectural decision:
 
 > Replace free-form LLM output with a typed, validated intermediate format that constrains what the model can produce and what the renderer will accept.
 
-That's the same thesis as Starlord. The differences are scope, approach, and how strictly the contract is enforced.
+That's the same thesis as Solar. The differences are scope, approach, and how strictly the contract is enforced.
 
 ---
 
@@ -39,7 +39,7 @@ Full-stack generative UI framework built around three machine-readability primit
 2. Zod schema enforcement on component props at definition time — typed contracts baked into `defineComponent()`
 3. Hard restriction of LLM output to a pre-registered component library — the model cannot generate arbitrary UI
 
-Very close in architecture to Starlord. The Zod schema approach is the equivalent of Starlord's `props` schema object.
+Very close in architecture to Solar. The Zod schema approach is the equivalent of Solar's `props` schema object.
 
 - https://github.com/thesysdev/openui
 
@@ -111,8 +111,8 @@ Studies measuring LLM-generated UI quality put current models at ELO ~1736 vs ~1
 
 ---
 
-## Where Starlord fits
+## Where Solar fits
 
-Most of these are either commercial products with broader scope (A2UI, OpenUI) or academic pipelines restricted to specific output formats (GenUI → HTML only). Starlord is a clean, from-scratch runtime implementation of the core idea — no dependencies, no build step, no compiler, just the primitives. That makes it a useful base for experimenting with the architecture without the constraints of a production system.
+Most of these are either commercial products with broader scope (A2UI, OpenUI) or academic pipelines restricted to specific output formats (GenUI → HTML only). Solar is a clean, from-scratch runtime implementation of the core idea — no dependencies, no build step, no compiler, just the primitives. That makes it a useful base for experimenting with the architecture without the constraints of a production system.
 
 The open questions from the FRAMEWORK.md spec (TypeScript interfaces vs. plain objects, component composition across schema boundaries, a lightweight dev server that surfaces validation errors) are not answered by any of these systems. That's the gap.

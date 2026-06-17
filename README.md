@@ -1,10 +1,10 @@
-# Starlord
+# Solar
 
 A runtime-based JavaScript UI framework designed around a constraint most frameworks ignore: a lot of the code targeting it won't be written by a human.
 
 Existing frameworks — React, Vue, Svelte — were designed assuming a developer writes, reads, and maintains every file. AI-generated code has different properties. It's often correct in isolation but inconsistent across files. It doesn't respect conventions it can't see. It gets regenerated frequently rather than incrementally maintained.
 
-Starlord solves for that by making contracts explicit, structure rigid, and side effects declared. The goal is AI output that's predictably correct, not just probably correct.
+Solar solves for that by making contracts explicit, structure rigid, and side effects declared. The goal is AI output that's predictably correct, not just probably correct.
 
 ---
 
@@ -126,29 +126,36 @@ h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
 
 ### Hooks and effects
 
-State and effects work like React, with one difference: `useEffect` uses an object form that makes dependencies named and machine-readable.
+State is `useState`. Side effects use three explicit primitives instead of a general `useEffect`:
+
+- **`useResource`** — async data fetching with automatic AbortController cancellation on key change
+- **`useSubscription`** — event listener that attaches and detaches when source/event/handler changes
+- **`onMount` / `onUnmount`** — lifecycle callbacks that run once, not on every render
 
 ```js
-const Counter = defineComponent({
-  name: 'Counter',
-  props: {},
-  render() {
-    const [count, setCount] = useState(0)
-    return createElement('div', {},
-      createElement('p', {}, `Count: ${count}`),
-      Button({ label: '+', onClick: () => setCount(c => c + 1) })
-    )
-  }
-})
+const UserCard = defineComponent({
+  name: 'UserCard',
+  props: { userId: { type: 'number', required: true } },
+  render({ userId }) {
+    const [width, setWidth] = useState(window.innerWidth)
 
-useEffect({
-  deps: { userId },
-  run({ userId }) {
-    const controller = new AbortController()
-    fetch(`/api/user/${userId}`, { signal: controller.signal })
-      .then(r => r.json())
-      .then(setUser)
-    return () => controller.abort()
+    // cancels the previous fetch automatically when userId changes
+    const { data, loading, error } = useResource({
+      key: userId,
+      fetch: async (signal) => {
+        const res = await fetch(`/api/user/${userId}`, { signal })
+        return res.json()
+      },
+    })
+
+    // attaches once, re-attaches only if source/event/handler changes
+    useSubscription({ source: window, event: 'resize', handler: () => setWidth(window.innerWidth) })
+
+    onMount(() => analytics.track('UserCard mounted'))
+    onUnmount(() => analytics.track('UserCard unmounted'))
+
+    if (loading) return createElement('p', {}, 'Loading...')
+    return createElement('p', {}, `${data.name} — viewport: ${width}px`)
   }
 })
 ```
@@ -163,7 +170,7 @@ framework/
 │   ├── createElement.js     # vnode factory
 │   ├── render.js            # mount vnode tree to DOM
 │   ├── diff.js              # reconcile old and new vnode trees
-│   ├── hooks.js             # useState, useEffect, useMemo
+│   ├── hooks.js             # useState, useMemo, useResource, useSubscription, onMount, onUnmount
 │   └── scheduler.js         # batch and defer re-renders
 ├── contract/
 │   ├── defineComponent.js   # strict component definition with prop schema

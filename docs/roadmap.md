@@ -1,6 +1,6 @@
-# Starlord Roadmap
+# Solar Roadmap
 
-Four improvements informed by the AI-first UI framework landscape research. Each closes a gap between what Starlord does today and what the leading systems (A2UI, OpenUI, GenUI) do.
+Four improvements informed by the AI-first UI framework landscape research. Each closes a gap between what Solar does today and what the leading systems (A2UI, OpenUI, GenUI) do.
 
 ---
 
@@ -15,7 +15,7 @@ Four improvements informed by the AI-first UI framework landscape research. Each
 
 ## 1. Structured error objects
 
-**Problem:** Starlord throws plain strings. An agent consuming a validation error can't parse it programmatically — it has to regex a human-readable message.
+**Problem:** Solar throws plain strings. An agent consuming a validation error can't parse it programmatically — it has to regex a human-readable message.
 
 **What we're building:** A `ContractError` class that extends `Error` with structured fields an agent can act on directly.
 
@@ -49,7 +49,7 @@ throw new ContractError({
 
 ## 2. Component registry
 
-**Problem:** Starlord validates props once a component is called, but there's no way for a model to know what components exist before generating code. Unknown components fail silently or at mount time with a generic error.
+**Problem:** Solar validates props once a component is called, but there's no way for a model to know what components exist before generating code. Unknown components fail silently or at mount time with a generic error.
 
 **What we're building:** A module-level registry. Components self-register on import. The registry exposes a machine-readable manifest — a model reads it before generating any composition code.
 
@@ -88,7 +88,7 @@ Mounting an unregistered component throws a `ContractError` with a fix instructi
 
 ## 3. Slots (typed component composition)
 
-**Problem:** Starlord has no answer for the open question in FRAMEWORK.md: how does the contract model handle component composition? A parent receiving a child as a prop has no way to declare or enforce what that child should be.
+**Problem:** Solar has no answer for the open question in FRAMEWORK.md: how does the contract model handle component composition? A parent receiving a child as a prop has no way to declare or enforce what that child should be.
 
 **What we're building:** A `slot` prop type. Components tag their output vnode with `_source = name`. Slot validation checks that tag.
 
