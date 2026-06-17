@@ -2,6 +2,7 @@
   "name": "solar",
   "version": "0.1.0",
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "npx --yes serve . --listen 3456"
   }
