@@ -11,8 +11,10 @@ Starlord solves for that by making contracts explicit, structure rigid, and side
 ## Core principles
 
 - **Explicit contracts over conventions** — props are typed and validated at the component boundary, not inferred
+- **Component registry** — models read a machine-readable manifest before generating any composition code
+- **Structured errors** — validation failures return parseable JSON an agent can act on directly
 - **Declared side effects** — effects state what they depend on and what they touch; no implicit subscriptions
-- **Rigid file structure** — a model generating a new component knows exactly where everything goes
+- **Typed composition** — slot props enforce which component can fill them, with runtime validation
 - **Runtime-based** — no compiler required; debuggable in the browser as-is
 - **Small surface area** — fewer primitives means fewer ways to generate something wrong
 
@@ -20,10 +22,12 @@ Starlord solves for that by making contracts explicit, structure rigid, and side
 
 ## How it works
 
-Every component is defined through a schema that declares its shape explicitly:
+### Defining a component
+
+Every component declares its shape explicitly. Register it so other components and models can discover it.
 
 ```js
-import { createElement, defineComponent } from './framework/index.js'
+import { createElement, defineComponent, registry } from './framework/index.js'
 
 const Button = defineComponent({
   name: 'Button',
@@ -36,15 +40,93 @@ const Button = defineComponent({
     return createElement('button', { class: variant, onclick: onClick }, label)
   }
 })
+
+registry.register(Button)
 ```
 
-Pass the wrong type and you get an error that tells you exactly what's wrong:
+### Structured errors
 
-```
-Button: expected "label" to be string, got number
+Pass the wrong type and you get a structured error — not just a string. An agent can parse and self-correct without regex.
+
+```js
+Button({ label: 42, onClick: () => {} })
+// throws ContractError:
+{
+  "error": "ContractError",
+  "component": "Button",
+  "prop": "label",
+  "expected": "string",
+  "received": "number",
+  "fix": "Pass a string value for \"label\""
+}
 ```
 
-State works like React hooks, without the magic:
+### Component registry
+
+Before generating composition code, a model reads the full catalog:
+
+```js
+registry.manifest()
+// →
+[
+  {
+    "name": "Button",
+    "props": {
+      "label": { "type": "string", "required": true },
+      "onClick": { "type": "function", "required": true },
+      "variant": { "type": "string", "enum": ["primary", "secondary"], "default": "primary" }
+    }
+  },
+  ...
+]
+```
+
+### Typed slots (component composition)
+
+A parent component declares which component type can fill a slot. Passing anything else throws a `ContractError`.
+
+```js
+const Card = defineComponent({
+  name: 'Card',
+  props: {
+    title: { type: 'string', required: true },
+    action: { type: 'slot', accepts: 'Button', required: true },
+  },
+  render({ title, action }) {
+    return createElement('div', { class: 'card' },
+      createElement('h3', {}, title),
+      action,
+    )
+  }
+})
+
+// valid
+Card({ title: 'Hello', action: Button({ label: 'Go', onClick: () => {} }) })
+
+// throws: Card: prop "action": expected slot(Button), got vnode with no _source
+Card({ title: 'Hello', action: createElement('button', {}, 'Go') })
+```
+
+### Compact h() notation
+
+`h()` parses a dense array format into a vnode tree. Registry-aware — component names resolve automatically.
+
+```js
+import { h } from './framework/index.js'
+
+// plain DOM nodes
+h(['div', { class: 'row' },
+  ['p', {}, 'Hello'],
+  ['button', { class: 'btn' }, 'Click'],
+])
+
+// registered component by name — dispatches to Button()
+h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
+```
+
+### Hooks and effects
+
+State and effects work like React, with one difference: `useEffect` uses an object form that makes dependencies named and machine-readable.
 
 ```js
 const Counter = defineComponent({
@@ -58,11 +140,7 @@ const Counter = defineComponent({
     )
   }
 })
-```
 
-Effects use an object form that makes dependencies explicit and machine-readable:
-
-```js
 useEffect({
   deps: { userId },
   run({ userId }) {
@@ -89,15 +167,18 @@ framework/
 │   └── scheduler.js         # batch and defer re-renders
 ├── contract/
 │   ├── defineComponent.js   # strict component definition with prop schema
+│   ├── ContractError.js     # structured error class with toJSON()
 │   ├── validate.js          # runtime prop validation
-│   └── types.js             # primitive type definitions
+│   └── types.js             # primitive type definitions + slot type
 ├── runtime/
 │   ├── reconciler.js        # component lifecycle and mount/unmount
 │   └── events.js            # delegated event handling
+├── registry.js              # component catalog and manifest
+├── h.js                     # compact array notation parser
 └── index.js                 # public API
 ```
 
-Components live in `components/`, one per file, default export is always the `defineComponent` call. That's a rule a model can follow without inference.
+Components live in `components/`, one per file, default export is the `defineComponent` call, self-registered on import. Rules a model can follow without inference.
 
 ---
 
@@ -109,7 +190,14 @@ npm run dev
 
 Open `http://localhost:3456/demo/` (trailing slash required — static server quirk).
 
-The demo covers all six build phases: static rendering, diffing, hooks, contract validation, declared effects, and batched updates.
+The demo covers all nine build phases: static rendering, diffing, hooks, contract validation, declared effects, batched updates, registry manifest, compact h() notation, and typed slots.
+
+---
+
+## Docs
+
+- [`docs/roadmap.md`](docs/roadmap.md) — implementation plan for the four AI-first improvements
+- [`docs/landscape.md`](docs/landscape.md) — research on comparable systems (Google A2UI, OpenUI, GenUI, SpecifyUI)
 
 ---
 
