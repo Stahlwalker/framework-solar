@@ -6,11 +6,13 @@ const App = defineComponent({
   render() {
     const [count, setCount] = useState(0)
 
-    return createElement('div', {},
-      createElement('h1', {}, '{{PROJECT_NAME}}'),
-      createElement('p', {}, `Count: ${count}`),
-      createElement('button', { class: 'btn btn--primary', onclick: () => setCount(c => c + 1) }, '+'),
-      createElement('button', { class: 'btn btn--secondary', onclick: () => setCount(c => c - 1) }, '-'),
+    return createElement('div', { class: 'card' },
+      createElement('p', { class: 'card__label' }, 'Counter — edit me'),
+      createElement('div', { class: 'card__count' }, String(count)),
+      createElement('div', { class: 'card__controls' },
+        createElement('button', { class: 'btn btn--primary', onclick: () => setCount(c => c + 1) }, '+'),
+        createElement('button', { class: 'btn btn--secondary', onclick: () => setCount(c => c - 1) }, '−'),
+      ),
     )
   },
 })
