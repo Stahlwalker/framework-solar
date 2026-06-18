@@ -14,7 +14,7 @@
 - [ ] Remove `vitepress-setup.md` (replaced by Mintlify)
 
 ## Framework
-- [ ] Finish FRAMEWORK.md build phases (phases 2–7 still pending full implementation)
+- [x] All 7 build phases implemented (renderer, diffing, hooks, contracts, effects, scheduler, structured errors)
 
 ## Distribution
 - [ ] Decide on monorepo structure vs separate repos for `solar` and `create-solar`
