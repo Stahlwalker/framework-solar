@@ -1,0 +1,114 @@
+# defineComponent
+
+The core primitive in Solar. Every component is defined through a schema that declares its shape explicitly — props are typed and validated at runtime before the component renders.
+
+```js
+import { defineComponent, createElement, registry } from '../solar/index.js'
+
+const Button = defineComponent({
+  name: 'Button',
+  props: {
+    label: { type: 'string', required: true },
+    onClick: { type: 'function', required: true },
+    variant: { type: 'string', enum: ['primary', 'secondary'], default: 'primary' },
+  },
+  render({ label, onClick, variant }) {
+    return createElement('button', { class: variant, onclick: onClick }, label)
+  },
+})
+
+registry.register(Button)
+export default Button
+```
+
+## Config
+
+<ParamField path="name" type="string" required>
+  The component name. Used in error messages, the registry, and slot validation. Must be unique.
+</ParamField>
+
+<ParamField path="props" type="object">
+  Schema defining the component's accepted props. Each key is a prop name, each value is a prop descriptor.
+</ParamField>
+
+<ParamField path="render" type="function" required>
+  Receives the resolved props (defaults applied, validated) and returns a vnode.
+</ParamField>
+
+## Prop descriptor
+
+Each entry in `props` accepts the following fields:
+
+| Field | Type | Description |
+|---|---|---|
+| `type` | string | One of `string`, `number`, `boolean`, `function`, `object`, `array`, `any`, `slot` |
+| `required` | boolean | Throws if the prop is missing or null |
+| `default` | any | Value used when the prop is not passed |
+| `enum` | array | Restricts the value to a list of allowed strings |
+| `accepts` | string | For `slot` type only — restricts to a specific component name |
+
+## Prop types
+
+```js
+import { Types } from '../solar/index.js'
+
+// Types is a convenience object — the string values work directly too
+Types.string    // 'string'
+Types.number    // 'number'
+Types.boolean   // 'boolean'
+Types.function  // 'function'
+Types.object    // 'object'
+Types.array     // 'array'
+Types.any       // 'any'
+Types.slot      // 'slot'
+```
+
+## Contract errors
+
+If a prop contract is violated, Solar throws a structured `ContractError` immediately — before the component renders:
+
+```json
+{
+  "error": "ContractError",
+  "component": "Button",
+  "prop": "label",
+  "expected": "string",
+  "received": "number",
+  "fix": "Pass a string value for \"label\"",
+  "message": "Button: prop \"label\": expected string, got number"
+}
+```
+
+Use `e.toJSON()` to get the structured object, or `e.message` for the human-readable string.
+
+## Slots
+
+Slots are typed component composition. A slot prop expects a vnode produced by a specific component:
+
+```js
+const Card = defineComponent({
+  name: 'Card',
+  props: {
+    title: { type: 'string', required: true },
+    action: { type: 'slot', accepts: 'Button' }, // must be a Button vnode
+  },
+  render({ title, action }) {
+    return createElement('div', { class: 'card' },
+      createElement('h2', {}, title),
+      action,
+    )
+  },
+})
+```
+
+Passing a plain `createElement` vnode instead of a `Button` vnode throws a `ContractError`.
+
+## Return value
+
+`defineComponent` returns a component function. Call it with props to get a vnode:
+
+```js
+Button({ label: 'Save', onClick: handleSave, variant: 'primary' })
+```
+
+The returned vnode has a `_source` property set to the component name — used by the slot system for type checking.

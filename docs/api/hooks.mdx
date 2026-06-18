@@ -1,0 +1,149 @@
+# Hooks
+
+Solar's hooks manage state, async data, subscriptions, and lifecycle. All hooks must be called inside a component's `render` function — never conditionally, never outside a component.
+
+---
+
+## useState
+
+Persists a value across renders. Returns the current value and a setter.
+
+```js
+const [count, setCount] = useState(0)
+
+// Set directly
+setCount(5)
+
+// Set from previous value (recommended when updating based on current state)
+setCount(c => c + 1)
+```
+
+<ParamField path="initial" type="any">
+  The initial state value. Can also be a function — it runs once on the first render and its return value is used as the initial state (lazy initialization).
+</ParamField>
+
+**Returns:** `[value, setter]`
+
+The setter skips a re-render if the new value is strictly equal to the previous value.
+
+---
+
+## useMemo
+
+Caches an expensive computation. Recomputes only when deps change.
+
+```js
+const sorted = useMemo(
+  () => items.slice().sort((a, b) => a.name.localeCompare(b.name)),
+  [items]
+)
+```
+
+<ParamField path="compute" type="function" required>
+  The function to memoize. Runs on first render and whenever deps change.
+</ParamField>
+
+<ParamField path="deps" type="array | object" required>
+  Values that determine when to recompute. Can be an array or a plain object — compared by value, not reference.
+</ParamField>
+
+**Returns:** the cached computed value.
+
+---
+
+## useResource
+
+Fetches async data. Re-fetches when `key` changes, and automatically cancels the in-flight request from the previous key.
+
+```js
+const { data, loading, error } = useResource({
+  key: userId,
+  fetch: async (signal) => {
+    const res = await fetch(`/api/user/${userId}`, { signal })
+    return res.json()
+  },
+})
+
+if (loading) return createElement('p', {}, 'Loading...')
+if (error)   return createElement('p', {}, error.message)
+return createElement('p', {}, data.name)
+```
+
+<ParamField path="key" type="any" required>
+  Any serializable value. When it changes, the previous request is aborted and a new one starts. The previous data remains available during the transition (`data` is not cleared to null).
+</ParamField>
+
+<ParamField path="fetch" type="function" required>
+  An async function that receives an `AbortSignal` and returns the data. Pass the signal to `fetch()` or any other cancellable async operation.
+</ParamField>
+
+**Returns:** `{ data, loading, error }`
+
+| Field | Type | Description |
+|---|---|---|
+| `data` | any | The resolved value from the last successful fetch, or null on first load |
+| `loading` | boolean | True while a fetch is in flight |
+| `error` | Error \| null | Set if the fetch threw, null otherwise |
+
+---
+
+## useSubscription
+
+Attaches an event listener and removes it when the component unmounts or when `source`, `event`, or `handler` changes.
+
+```js
+const [width, setWidth] = useState(window.innerWidth)
+
+useSubscription({
+  source: window,
+  event: 'resize',
+  handler: () => setWidth(window.innerWidth),
+})
+```
+
+Works with DOM `EventTarget`s (`.addEventListener`) and Node-style emitters (`.on`).
+
+<ParamField path="source" type="EventTarget | EventEmitter" required>
+  The object to attach the listener to.
+</ParamField>
+
+<ParamField path="event" type="string" required>
+  The event name.
+</ParamField>
+
+<ParamField path="handler" type="function" required>
+  The event handler. Solar compares this by reference — if you need a stable handler, define it outside the render function or memoize it with `useMemo`.
+</ParamField>
+
+---
+
+## onMount
+
+Runs a function once after the component's first render.
+
+```js
+onMount(() => {
+  analytics.track('component_mounted')
+})
+```
+
+<ParamField path="fn" type="function" required>
+  Runs once. Not called on subsequent re-renders.
+</ParamField>
+
+---
+
+## onUnmount
+
+Registers a cleanup function that runs when the component is removed from the DOM.
+
+```js
+onUnmount(() => {
+  subscription.cancel()
+  clearInterval(timer)
+})
+```
+
+<ParamField path="fn" type="function" required>
+  Runs once when the component is unmounted.
+</ParamField>

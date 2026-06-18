@@ -1,0 +1,66 @@
+# h()
+
+A compact array-based notation for building vnode trees. An alternative to `createElement` that reads closer to the structure it describes.
+
+```js
+import { h } from '../solar/index.js'
+
+h(['div', { class: 'card' },
+  ['h2', {}, 'Title'],
+  ['p', {}, 'Body text'],
+])
+```
+
+Equivalent to:
+
+```js
+createElement('div', { class: 'card' },
+  createElement('h2', {}, 'Title'),
+  createElement('p', {}, 'Body text'),
+)
+```
+
+## Syntax
+
+```js
+h([type, props?, ...children])
+```
+
+Each node is an array where:
+- `type` — a tag name string (`'div'`) or a registered component name (`'Button'`)
+- `props` — optional object of attributes or props
+- `children` — remaining items, each a nested array or a primitive
+
+Primitives (strings, numbers) pass through unchanged.
+
+## Registry dispatch
+
+If the type matches a registered component name, `h()` calls that component instead of `createElement`:
+
+```js
+registry.register(Button)
+
+h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
+// equivalent to: Button({ label: 'Save', onClick: handleSave, variant: 'primary' })
+```
+
+Prop validation still runs — a wrong prop type throws a `ContractError`.
+
+## Nested trees
+
+```js
+h(['div', { class: 'layout' },
+  ['header', {},
+    ['h1', {}, 'Solar'],
+  ],
+  ['main', {},
+    ['Button', { label: 'Get started', onClick: () => {}, variant: 'primary' }],
+  ],
+])
+```
+
+## When to use h() vs createElement
+
+`h()` is more compact and closer to markup in structure. `createElement` is more explicit and easier to trace in a debugger. Both produce identical vnodes — mix them freely.
+
+`h()` is particularly well-suited as a generation target: the array format is easy for a model to produce without needing to know function call syntax.

@@ -1,0 +1,94 @@
+# Registry
+
+A central store of all registered components. Used by `h()` for dispatch and by agents/tools to discover what components are available and what props they accept.
+
+```js
+import { registry } from '../solar/index.js'
+```
+
+---
+
+## registry.register(component)
+
+Adds a component to the registry. Must be called with a component created by `defineComponent`.
+
+```js
+import { defineComponent, registry } from '../solar/index.js'
+
+const Button = defineComponent({ name: 'Button', props: { ... }, render() { ... } })
+registry.register(Button)
+```
+
+Throws a `ContractError` if the argument was not created with `defineComponent`.
+
+---
+
+## registry.get(name)
+
+Returns the component function for a given name, or `undefined` if not found.
+
+```js
+const Button = registry.get('Button')
+Button({ label: 'Save', onClick: handleSave })
+```
+
+---
+
+## registry.has(name)
+
+Returns `true` if a component with that name is registered.
+
+```js
+if (registry.has('Button')) {
+  // safe to use
+}
+```
+
+---
+
+## registry.list()
+
+Returns an array of all registered components with their prop schemas — structured for programmatic use.
+
+```js
+registry.list()
+// [
+//   {
+//     name: 'Button',
+//     props: {
+//       label: { type: 'string', required: true },
+//       onClick: { type: 'function', required: true },
+//       variant: { type: 'string', enum: ['primary', 'secondary'], default: 'primary' }
+//     }
+//   },
+//   ...
+// ]
+```
+
+---
+
+## registry.manifest()
+
+Returns `registry.list()` serialized as a JSON string. Designed to be passed to an AI agent as context — the agent can read the manifest and know exactly what components exist and how to call them.
+
+```js
+const context = registry.manifest()
+// pass to your agent as part of the system prompt or tool context
+```
+
+Example output:
+
+```json
+[
+  {
+    "name": "Button",
+    "props": {
+      "label": { "type": "string", "required": true },
+      "onClick": { "type": "function", "required": true },
+      "variant": { "type": "string", "enum": ["primary", "secondary"], "default": "primary" }
+    }
+  }
+]
+```
+
+This is one of Solar's core differentiators — a machine-readable schema for every component in the app, available at runtime with a single call.

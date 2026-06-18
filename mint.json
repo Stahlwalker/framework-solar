@@ -23,7 +23,16 @@
       "pages": ["docs/introduction", "docs/installation", "docs/use-cases"]
     },
     {
-      "group": "Reference",
+      "group": "API Reference",
+      "pages": [
+        "docs/api/define-component",
+        "docs/api/hooks",
+        "docs/api/h",
+        "docs/api/registry"
+      ]
+    },
+    {
+      "group": "More",
       "pages": ["docs/roadmap"]
     }
   ],
