@@ -1,0 +1,8 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes serve . --listen 3000"
+  }
+}

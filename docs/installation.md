@@ -1,6 +1,37 @@
 # Installation
 
-Solar is runtime-based — no compiler, no build step required. You can use it directly in the browser or install it via npm for bundler-based projects.
+Solar is runtime-based — no compiler, no build step required. Scaffold a new project with one command, or drop it into any HTML file via CDN.
+
+---
+
+## Scaffold a new project (recommended)
+
+```bash
+npm create solar@latest my-app
+```
+
+This creates a `my-app/` directory with everything wired up:
+
+```
+my-app/
+├── index.html
+├── main.js
+├── package.json
+├── solar/          # Solar framework (local copy)
+└── components/
+    └── App.js
+```
+
+Then:
+
+```bash
+cd my-app
+npm run dev
+```
+
+Open `http://localhost:3000` — your app is running.
+
+---
 
 ---
 
