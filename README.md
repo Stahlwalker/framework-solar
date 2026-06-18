@@ -192,7 +192,7 @@ Components live in `components/`, one per file, default export is the `defineCom
 ## Getting started
 
 ```bash
-npm create solar@latest my-app
+npm create solarbuild@latest my-app
 cd my-app
 npm run dev
 ```
