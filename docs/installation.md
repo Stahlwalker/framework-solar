@@ -15,7 +15,7 @@ The fastest way to get running. Import Solar directly from a CDN in any HTML fil
   <body>
     <div id="app"></div>
     <script type="module">
-      import { defineComponent, mountComponent, useState, createElement } from 'https://cdn.jsdelivr.net/npm/solar/index.js'
+      import { defineComponent, mountComponent, useState, createElement } from 'https://cdn.jsdelivr.net/gh/Stahlwalker/framework-solar@main/framework/index.js'
 
       const App = defineComponent({
         name: 'App',
@@ -40,6 +40,8 @@ No install, no config. Open the file in a browser and it works.
 ---
 
 ## npm
+
+> **Coming soon.** npm publish is pending. Use the CDN path above in the meantime.
 
 For projects using a bundler (Vite, Rollup, esbuild):
 
