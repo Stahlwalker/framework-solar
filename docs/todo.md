@@ -9,8 +9,8 @@
 ## Docs
 - [x] Write API reference (`defineComponent`, hooks, `h()`, registry)
 - [x] Set up Mintlify docs site (solar-e6dcfc3e.mintlify.app)
-- [ ] Buy and point a domain (leaning toward `solarbuild.ai`)
-- [ ] Add custom domain to Mintlify once purchased
+- [x] Buy `solarbuild.dev` domain
+- [x] Add custom domain to Mintlify (`docs.solarbuild.dev`)
 - [x] Remove `vitepress-setup.md` (replaced by Mintlify)
 
 ## Framework

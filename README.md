@@ -220,11 +220,11 @@ The demo covers all nine build phases: static rendering, diffing, hooks, contrac
 
 ## Docs
 
-Full documentation at [solar-e6dcfc3e.mintlify.app](https://solar-e6dcfc3e.mintlify.app)
+Full documentation at [docs.solarbuild.dev](https://docs.solarbuild.dev)
 
-- [Installation](https://solar-e6dcfc3e.mintlify.app/docs/installation)
-- [Use Cases](https://solar-e6dcfc3e.mintlify.app/docs/use-cases)
-- [API Reference](https://solar-e6dcfc3e.mintlify.app/docs/api/define-component)
+- [Installation](https://docs.solarbuild.dev/docs/installation)
+- [Use Cases](https://docs.solarbuild.dev/docs/use-cases)
+- [API Reference](https://docs.solarbuild.dev/docs/api/define-component)
 
 ---
 
