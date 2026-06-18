@@ -1,8 +1,15 @@
 {
-  "name": "solar",
+  "name": "solarbuild",
   "version": "0.1.0",
   "type": "module",
   "license": "MIT",
+  "main": "./framework/index.js",
+  "exports": {
+    ".": "./framework/index.js"
+  },
+  "files": [
+    "framework"
+  ],
   "scripts": {
     "dev": "npx --yes serve . --listen 3456"
   }

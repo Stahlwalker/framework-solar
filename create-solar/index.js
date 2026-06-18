@@ -28,7 +28,7 @@ function copyDir(src, dest, name) {
 const arg = process.argv[2]
 const defaultName = arg || 'my-solar-app'
 
-console.log('\nSolar — create a new project\n')
+console.log('\nsolarbuild — create a new project\n')
 
 let projectName = arg || await prompt(`Project name (${defaultName}): `)
 if (!projectName) projectName = defaultName

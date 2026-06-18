@@ -7,7 +7,7 @@ Solar is runtime-based — no compiler, no build step required. Scaffold a new p
 ## Scaffold a new project (recommended)
 
 ```bash
-npm create solar@latest my-app
+npm create solarbuild@latest my-app
 ```
 
 This creates a `my-app/` directory with everything wired up:
@@ -46,7 +46,7 @@ The fastest way to get running. Import Solar directly from a CDN in any HTML fil
   <body>
     <div id="app"></div>
     <script type="module">
-      import { defineComponent, mountComponent, useState, createElement } from 'https://cdn.jsdelivr.net/gh/Stahlwalker/framework-solar@main/framework/index.js'
+      import { defineComponent, mountComponent, useState, createElement } from 'https://cdn.jsdelivr.net/npm/solarbuild/framework/index.js'
 
       const App = defineComponent({
         name: 'App',
@@ -77,13 +77,13 @@ No install, no config. Open the file in a browser and it works.
 For projects using a bundler (Vite, Rollup, esbuild):
 
 ```bash
-npm install solar
+npm install solarbuild
 ```
 
 Then import from the package directly:
 
 ```js
-import { defineComponent, mountComponent, useState, createElement } from 'solar'
+import { defineComponent, mountComponent, useState, createElement } from 'solarbuild'
 ```
 
 ---
