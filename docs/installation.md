@@ -72,8 +72,6 @@ No install, no config. Open the file in a browser and it works.
 
 ## npm
 
-> **Coming soon.** npm publish is pending. Use the CDN path above in the meantime.
-
 For projects using a bundler (Vite, Rollup, esbuild):
 
 ```bash

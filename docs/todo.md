@@ -1,10 +1,10 @@
 # Todo
 
 ## Publishing
-- [ ] Publish `solar` to npm
-- [ ] Publish `create-solar` to npm
-- [ ] Verify `npm create solar@latest` works end to end
-- [ ] Update installation doc CDN URL from jsDelivr/GitHub to npm once published
+- [x] Publish `solarbuild` to npm (v0.1.0 live)
+- [x] Publish `create-solarbuild` to npm (v0.1.0 live)
+- [ ] Verify `npm create solarbuild@latest my-app` works end to end
+- [x] Update installation doc CDN URL to npm (cdn.jsdelivr.net/npm/solarbuild)
 
 ## Docs
 - [x] Write API reference (`defineComponent`, hooks, `h()`, registry)
@@ -17,4 +17,4 @@
 - [x] All 7 build phases implemented (renderer, diffing, hooks, contracts, effects, scheduler, structured errors)
 
 ## Distribution
-- [ ] Decide on monorepo structure vs separate repos for `solar` and `create-solar`
+- [ ] Decide on monorepo structure vs separate repos for `solarbuild` and `create-solarbuild`

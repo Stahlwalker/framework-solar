@@ -44,7 +44,7 @@ const templateDir = path.join(__dirname, 'template')
 copyDir(templateDir, targetDir, projectName)
 
 // Copy Solar framework into project as solar/
-const frameworkSrc = path.join(__dirname, '..', 'framework')
+const frameworkSrc = path.join(__dirname, 'framework')
 const frameworkDest = path.join(targetDir, 'solar')
 copyDir(frameworkSrc, frameworkDest, projectName)
 
