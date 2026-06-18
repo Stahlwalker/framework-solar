@@ -189,6 +189,23 @@ Components live in `components/`, one per file, default export is the `defineCom
 
 ---
 
+## Getting started
+
+```bash
+npm create solar@latest my-app
+cd my-app
+npm run dev
+```
+
+Or use the CDN directly in any HTML file:
+
+```html
+<script type="module">
+  import { defineComponent, mountComponent, useState, createElement }
+    from 'https://cdn.jsdelivr.net/gh/Stahlwalker/framework-solar@main/framework/index.js'
+</script>
+```
+
 ## Running the demo
 
 ```bash
@@ -203,8 +220,11 @@ The demo covers all nine build phases: static rendering, diffing, hooks, contrac
 
 ## Docs
 
-- [`docs/roadmap.md`](docs/roadmap.md) — implementation plan for the four AI-first improvements
-- [`docs/landscape.md`](docs/landscape.md) — research on comparable systems (Google A2UI, OpenUI, GenUI, SpecifyUI)
+Full documentation at [solar-e6dcfc3e.mintlify.app](https://solar-e6dcfc3e.mintlify.app)
+
+- [Installation](https://solar-e6dcfc3e.mintlify.app/docs/installation)
+- [Use Cases](https://solar-e6dcfc3e.mintlify.app/docs/use-cases)
+- [API Reference](https://solar-e6dcfc3e.mintlify.app/docs/api/define-component)
 
 ---
 
