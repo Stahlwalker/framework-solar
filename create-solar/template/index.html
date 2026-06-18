@@ -8,19 +8,19 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --solar-purple: #5b5ef7;
-      --solar-purple-dim: #3b3eb5;
-      --solar-glow: rgba(91, 94, 247, 0.25);
+      --solar: #f59e0b;
+      --solar-dim: #b45309;
+      --solar-glow: rgba(245, 158, 11, 0.25);
       --star-color: rgba(255, 255, 255, 0.6);
-      --text: #e8e8f0;
-      --text-dim: #6b6b8a;
+      --text: #f0ede8;
+      --text-dim: #6b6860;
       --surface: rgba(255, 255, 255, 0.04);
       --border: rgba(255, 255, 255, 0.08);
     }
 
     html, body {
       height: 100%;
-      background: #080810;
+      background: #09080a;
       color: var(--text);
       font-family: system-ui, -apple-system, sans-serif;
       overflow-x: hidden;
@@ -53,7 +53,7 @@
       width: 600px;
       height: 600px;
       border-radius: 50%;
-      background: radial-gradient(circle at 40% 40%, #2a2aff 0%, #5b5ef7 30%, transparent 70%);
+      background: radial-gradient(circle at 40% 40%, #f59e0b 0%, #92400e 40%, transparent 70%);
       opacity: 0.12;
       filter: blur(60px);
       pointer-events: none;
@@ -83,7 +83,7 @@
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fff 0%, var(--solar-purple) 50%, #1a1a4a 100%);
+      background: radial-gradient(circle at 35% 35%, #fff8e1 0%, var(--solar) 50%, #78350f 100%);
       box-shadow: 0 0 12px var(--solar-glow);
       flex-shrink: 0;
     }
@@ -112,7 +112,7 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1.5px solid rgba(91, 94, 247, 0.4);
+      border: 1.5px solid rgba(245, 158, 11, 0.35);
       animation: spin 8s linear infinite;
     }
     .orbit-ring::after {
@@ -124,15 +124,15 @@
       height: 6px;
       margin-left: -3px;
       border-radius: 50%;
-      background: var(--solar-purple);
-      box-shadow: 0 0 8px var(--solar-purple);
+      background: var(--solar);
+      box-shadow: 0 0 8px var(--solar);
       animation: spin 8s linear infinite;
     }
     .orbit-core {
       position: absolute;
       inset: 20px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fff 0%, var(--solar-purple) 60%, #1a1a4a 100%);
+      background: radial-gradient(circle at 35% 35%, #fff8e1 0%, var(--solar) 55%, #78350f 100%);
       box-shadow: 0 0 20px var(--solar-glow);
     }
     @keyframes spin {
@@ -146,7 +146,7 @@
       letter-spacing: -0.03em;
       line-height: 1.1;
       margin-bottom: 1rem;
-      background: linear-gradient(135deg, #fff 0%, #a0a0ff 100%);
+      background: linear-gradient(135deg, #fff8e1 0%, #f59e0b 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -188,7 +188,7 @@
       line-height: 1;
       margin-bottom: 1.5rem;
       font-variant-numeric: tabular-nums;
-      background: linear-gradient(135deg, #fff 0%, #a0a0ff 100%);
+      background: linear-gradient(135deg, #fff8e1 0%, #f59e0b 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -211,8 +211,8 @@
     .btn:active { transform: scale(0.96); }
     .btn:hover { opacity: 0.85; }
     .btn--primary {
-      background: var(--solar-purple);
-      color: #fff;
+      background: var(--solar);
+      color: #1a0f00;
       box-shadow: 0 0 16px var(--solar-glow);
     }
     .btn--secondary {
@@ -235,7 +235,7 @@
       border: 1px solid var(--border);
       padding: 0.15em 0.5em;
       border-radius: 4px;
-      color: #a0a0ff;
+      color: #f59e0b;
     }
   </style>
 </head>
