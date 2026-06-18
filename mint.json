@@ -20,7 +20,7 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["docs/installation", "docs/use-cases"]
+      "pages": ["docs/introduction", "docs/installation", "docs/use-cases"]
     },
     {
       "group": "Reference",

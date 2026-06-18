@@ -1,0 +1,26 @@
+# Introduction
+
+Solar is a runtime-based JavaScript framework designed for AI-generated code.
+
+Existing frameworks — React, Vue, Svelte — were built assuming a developer writes, reads, and maintains every file. AI-generated code has different properties: it's often correct in isolation but inconsistent across files, gets regenerated frequently, and doesn't respect conventions it can't see.
+
+Solar solves for that by making contracts explicit, structure rigid, and side effects declared. The goal is AI output that's predictably correct — not just probably correct.
+
+## Core principles
+
+- **Explicit contracts** — props are typed and validated at the component boundary, not inferred
+- **Declared side effects** — effects state what they depend on and what they touch
+- **Rigid file structure** — a model generating a new component knows exactly where everything goes
+- **Runtime-based** — no compiler required; debuggable in the browser as-is
+- **Small surface area** — fewer primitives means fewer ways to generate something wrong
+
+## Get started
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/docs/installation">
+    Get Solar running in under a minute
+  </Card>
+  <Card title="Use Cases" icon="lightbulb" href="/docs/use-cases">
+    What Solar is built for
+  </Card>
+</CardGroup>
