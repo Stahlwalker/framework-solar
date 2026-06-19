@@ -1,0 +1,252 @@
+---
+title: "Building a Homepage"
+---
+
+# Building a Homepage
+
+Solar works well for marketing pages and content-heavy UIs. This guide walks through building a real homepage — hero, feature grid, CTA — using `h()` as the primary authoring format, which is more compact than `createElement` for markup-heavy sections.
+
+---
+
+## Scaffold the project
+
+```bash
+npm create solarbuild@latest my-site
+cd my-site
+npx serve .
+```
+
+Open `http://localhost:3000`. You'll see the default Solar starter. You'll replace it with your homepage.
+
+---
+
+## File structure
+
+```
+my-site/
+├── index.html
+├── main.js
+├── solar/              # framework (local copy)
+└── components/
+    ├── Hero.js
+    ├── FeatureCard.js
+    ├── FeatureGrid.js
+    └── Nav.js
+```
+
+One component per file, default export is always the `defineComponent` call.
+
+---
+
+## Use h() for markup
+
+`h()` takes nested arrays instead of function calls. For a homepage with lots of nesting, it reads much closer to the structure you're describing:
+
+```js
+import { h } from '../solar/index.js'
+
+// instead of:
+createElement('section', { class: 'hero' },
+  createElement('h1', {}, 'Hello'),
+  createElement('p', {}, 'Subtitle'),
+)
+
+// write:
+h(['section', { class: 'hero' },
+  ['h1', {}, 'Hello'],
+  ['p', {}, 'Subtitle'],
+])
+```
+
+Both produce identical vnodes. `h()` is the better format for layout-heavy sections.
+
+---
+
+## Build the components
+
+### Nav
+
+```js
+// components/Nav.js
+import { defineComponent, registry, h } from '../solar/index.js'
+
+const Nav = defineComponent({
+  name: 'Nav',
+  props: {
+    logo: { type: 'string', required: true },
+    links: { type: 'array', required: true },
+  },
+  render({ logo, links }) {
+    return h(['nav', { class: 'nav' },
+      ['span', { class: 'nav__logo' }, logo],
+      ['div', { class: 'nav__links' },
+        ...links.map(link =>
+          ['a', { href: link.href, class: 'nav__link' }, link.label]
+        ),
+      ],
+    ])
+  },
+})
+
+registry.register(Nav)
+export default Nav
+```
+
+### Hero
+
+```js
+// components/Hero.js
+import { defineComponent, registry, h } from '../solar/index.js'
+
+const Hero = defineComponent({
+  name: 'Hero',
+  props: {
+    headline: { type: 'string', required: true },
+    subhead:  { type: 'string', required: true },
+    cta:      { type: 'string', required: true },
+    ctaHref:  { type: 'string', required: true },
+  },
+  render({ headline, subhead, cta, ctaHref }) {
+    return h(['section', { class: 'hero' },
+      ['h1', { class: 'hero__headline' }, headline],
+      ['p',  { class: 'hero__subhead' },  subhead],
+      ['a',  { class: 'btn btn--primary', href: ctaHref }, cta],
+    ])
+  },
+})
+
+registry.register(Hero)
+export default Hero
+```
+
+### FeatureCard
+
+```js
+// components/FeatureCard.js
+import { defineComponent, registry, h } from '../solar/index.js'
+
+const FeatureCard = defineComponent({
+  name: 'FeatureCard',
+  props: {
+    title:       { type: 'string', required: true },
+    description: { type: 'string', required: true },
+  },
+  render({ title, description }) {
+    return h(['div', { class: 'card' },
+      ['h3', { class: 'card__title' }, title],
+      ['p',  { class: 'card__desc' },  description],
+    ])
+  },
+})
+
+registry.register(FeatureCard)
+export default FeatureCard
+```
+
+### FeatureGrid
+
+```js
+// components/FeatureGrid.js
+import { defineComponent, registry, h } from '../solar/index.js'
+import './FeatureCard.js'
+
+const FEATURES = [
+  { title: 'Explicit contracts',   description: 'Props are typed and validated at runtime — no guessing.' },
+  { title: 'Component registry',   description: 'A machine-readable manifest of every component in your app.' },
+  { title: 'Structured errors',    description: 'Validation failures return parseable JSON an agent can act on.' },
+  { title: 'Declared side effects', description: 'Effects state what they depend on. No implicit subscriptions.' },
+  { title: 'No compiler',          description: 'Pure runtime. Debuggable in the browser as-is.' },
+  { title: 'Small surface area',   description: 'Fewer primitives means fewer ways to generate something wrong.' },
+]
+
+const FeatureGrid = defineComponent({
+  name: 'FeatureGrid',
+  props: {},
+  render() {
+    return h(['section', { class: 'features' },
+      ['h2', { class: 'features__heading' }, 'Why Solar'],
+      ['div', { class: 'features__grid' },
+        ...FEATURES.map(f =>
+          ['FeatureCard', { title: f.title, description: f.description }]
+        ),
+      ],
+    ])
+  },
+})
+
+registry.register(FeatureGrid)
+export default FeatureGrid
+```
+
+Note: `h()` dispatches `['FeatureCard', { ... }]` to the registered component automatically — no import needed at the call site as long as `FeatureCard.js` has been imported somewhere.
+
+---
+
+## Wire it up in main.js
+
+```js
+import { mountComponent, registry } from './solar/index.js'
+import Nav from './components/Nav.js'
+import Hero from './components/Hero.js'
+import FeatureGrid from './components/FeatureGrid.js'
+
+mountComponent(Nav, {
+  logo: 'Solar',
+  links: [
+    { label: 'Docs',   href: 'https://docs.solarbuild.dev' },
+    { label: 'GitHub', href: 'https://github.com/Stahlwalker/framework-solar' },
+  ],
+}, document.getElementById('nav'))
+
+mountComponent(Hero, {
+  headline: 'The UI framework built for AI-generated code',
+  subhead:  'Explicit contracts, a component registry, and structured errors — so AI output is predictably correct.',
+  cta:      'Get started',
+  ctaHref:  'https://docs.solarbuild.dev/docs/installation',
+}, document.getElementById('hero'))
+
+mountComponent(FeatureGrid, {}, document.getElementById('features'))
+```
+
+```html
+<!-- index.html -->
+<div id="nav"></div>
+<div id="hero"></div>
+<div id="features"></div>
+<script type="module" src="./main.js"></script>
+```
+
+---
+
+## Styling
+
+Solar doesn't ship CSS — bring your own. The design system tokens from Solar's own template are a good starting point:
+
+```css
+:root {
+  --solar:      #f59e0b;
+  --solar-glow: rgba(245, 158, 11, 0.25);
+  --text:       #f0ede8;
+  --text-dim:   #6b6860;
+  --surface:    rgba(255, 255, 255, 0.04);
+  --border:     rgba(255, 255, 255, 0.08);
+  --bg:         #09080a;
+}
+```
+
+See the [Design System](/docs/design-system) page for the full token reference and component styles.
+
+---
+
+## Deploying
+
+Since Solar is runtime-only with no build step, deploying is just serving static files.
+
+**Vercel:**
+```bash
+npx vercel
+```
+
+**Netlify:** drag and drop the project folder into the Netlify dashboard.
+
+**Any static host:** upload the folder — there's nothing to build.

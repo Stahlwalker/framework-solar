@@ -40,6 +40,10 @@
       ]
     },
     {
+      "group": "Guides",
+      "pages": ["docs/guides/building-a-homepage"]
+    },
+    {
       "group": "More",
       "pages": ["docs/design-system", "docs/roadmap"]
     }
