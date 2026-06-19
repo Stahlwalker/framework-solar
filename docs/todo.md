@@ -29,6 +29,9 @@
 - [x] Add `test-solar-app/` to `.gitignore` (local testing artifact, shouldn't be in public repo)
 - [x] Remove debug `console.log` from `demo/main.js:69` (`LifecycleDemo unmounted`)
 
+## Homepage
+- [ ] Create solarbuild.dev homepage (currently redirects to docs)
+
 ### Nice-to-have
 - [x] Add CHANGELOG (v0.1.0 baseline)
 - [x] Add CONTRIBUTING.md
