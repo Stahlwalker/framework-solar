@@ -13,6 +13,20 @@ export function clearCurrentComponent() {
   hookIndex = 0
 }
 
+const componentStack = []
+
+export function pushComponent(component) {
+  componentStack.push({ component: currentComponent, index: hookIndex })
+  currentComponent = component
+  hookIndex = 0
+}
+
+export function popComponent() {
+  const prev = componentStack.pop()
+  currentComponent = prev.component
+  hookIndex = prev.index
+}
+
 // ─── useState ────────────────────────────────────────────────────────────────
 
 export function useState(initial) {

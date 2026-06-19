@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.2.0] — 2026-06-19
+
+### Framework (`solarbuild`)
+
+- **Hooks in sub-components** — components composed via `h()` now have full hook support (`useState`, `useMemo`, `useResource`, `onMount`, etc.). Each sub-component gets its own reconciler instance keyed by position in the parent's render output. State changes trigger a root re-render; orphaned instances are cleaned up automatically on conditional rendering.
+- **Router** — `createRouter(routes)` for hash-based multi-page apps. Supports `:param` patterns, `*` wildcard fallback, and auto-registration of route components. `useRoute()` hook returns `{ path, params }` inside any component. `navigate(path)` for programmatic navigation.
+- **`mountPortal(fn, props, targetNode)`** — mount a component into an arbitrary DOM node outside `#app`. Auto-registers portal ownership when called during a parent render or `onMount`; parent unmount cascades to its portals automatically.
+- **`mountComponent` `onMount` option** — `mountComponent(fn, props, el, 0, { onMount: () => {} })` for post-render callbacks outside the component tree (canvas init, third-party widgets, scroll listeners).
+- **`innerHTML` prop** — `h(['div', { innerHTML: rawHtml }])` injects raw HTML. Children are ignored when set. Useful for syntax-highlighted code and markdown output.
+- **`setMeta({ title, description, og })`** — sets `document.title`, meta description, and Open Graph tags. Creates or updates tags in `<head>` without duplicating them.
+
+### Scaffolding (`create-solarbuild`)
+
+- **`--root` flag** — `npm create solarbuild@latest --root` scaffolds into the current directory instead of a subdirectory. Useful for GitHub Pages and hosts that expect files at the repo root.
+
+---
+
 ## [0.1.0] — 2024-06-19
 
 Initial public release.

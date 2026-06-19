@@ -1,6 +1,6 @@
 {
   "name": "solarbuild",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A runtime-based JavaScript UI framework designed around a constraint most frameworks ignore: a lot of the code targeting it won't be written by a human.",
   "type": "module",
   "license": "MIT",
