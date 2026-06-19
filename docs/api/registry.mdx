@@ -3,7 +3,7 @@
 A central store of all registered components. Used by `h()` for dispatch and by agents/tools to discover what components are available and what props they accept.
 
 ```js
-import { registry } from '../solar/index.js'
+import { registry } from 'solarbuild'
 ```
 
 ---
@@ -13,7 +13,7 @@ import { registry } from '../solar/index.js'
 Adds a component to the registry. Must be called with a component created by `defineComponent`.
 
 ```js
-import { defineComponent, registry } from '../solar/index.js'
+import { defineComponent, registry } from 'solarbuild'
 
 const Button = defineComponent({ name: 'Button', props: { ... }, render() { ... } })
 registry.register(Button)

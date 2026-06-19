@@ -3,7 +3,7 @@
 A compact array-based notation for building vnode trees. An alternative to `createElement` that reads closer to the structure it describes.
 
 ```js
-import { h } from '../solar/index.js'
+import { h } from 'solarbuild'
 
 h(['div', { class: 'card' },
   ['h2', {}, 'Title'],
@@ -58,6 +58,32 @@ h(['div', { class: 'layout' },
   ],
 ])
 ```
+
+## Children on registered components
+
+When `h()` calls a registered component and there are child nodes, they're passed as a `children` prop — not spread as arguments. The component must declare `children` in its schema to receive them.
+
+```js
+const List = defineComponent({
+  name: 'List',
+  props: {
+    children: { type: 'array' },
+  },
+  render({ children }) {
+    return createElement('ul', {}, ...children)
+  },
+})
+
+h(['List', {},
+  ['li', {}, 'Item 1'],
+  ['li', {}, 'Item 2'],
+])
+// children → [vnode, vnode] passed as a prop
+```
+
+For plain DOM elements (`div`, `ul`, etc.), children are passed as normal arguments to `createElement` — no prop involved.
+
+---
 
 ## When to use h() vs createElement
 

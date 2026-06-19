@@ -3,7 +3,7 @@
 The core primitive in Solar. Every component is defined through a schema that declares its shape explicitly — props are typed and validated at runtime before the component renders.
 
 ```js
-import { defineComponent, createElement, registry } from '../solar/index.js'
+import { defineComponent, createElement, registry } from 'solarbuild'
 
 const Button = defineComponent({
   name: 'Button',
@@ -50,7 +50,7 @@ Each entry in `props` accepts the following fields:
 ## Prop types
 
 ```js
-import { Types } from '../solar/index.js'
+import { Types } from 'solarbuild'
 
 // Types is a convenience object — the string values work directly too
 Types.string    // 'string'

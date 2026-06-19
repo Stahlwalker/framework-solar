@@ -112,7 +112,7 @@ Rules:
 Every component is defined through a schema that declares its shape explicitly:
 
 ```js
-import { defineComponent, createElement, registry } from 'solar'
+import { defineComponent, createElement, registry } from 'solarbuild'
 
 const Button = defineComponent({
   name: 'Button',
@@ -151,7 +151,7 @@ If a prop contract is violated, Solar throws a structured error immediately:
 Use `mountComponent` to attach a component to a DOM node:
 
 ```js
-import { mountComponent } from 'solar'
+import { mountComponent } from 'solarbuild'
 import Button from './components/Button.js'
 
 mountComponent(Button, {
