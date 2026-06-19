@@ -43,7 +43,7 @@
 ## Post-launch: Framework gaps (from homepage build feedback)
 
 ### Critical (~1–2 days each)
-- [ ] **Hooks don't work in sub-components** `~1–2 days` — `h.js` calls registry components directly, bypassing `setCurrentComponent()`. Fix = spawn child reconciler instances in `h()`. Touches the whole render pipeline.
+- [x] **Hooks don't work in sub-components** `~1–2 days` — added `renderSubComponent()`: position-keyed child instances with own hook state, push/pop context around renders, child re-renders redirect to root, orphan cleanup on conditional rendering.
 - [x] **No `onMount` lifecycle** `~2 hrs` — added `{ onMount }` option to `mountComponent()` for out-of-component use (canvas, scroll listeners, etc.). Hook-based `onMount` already existed for root components.
 
 ### Important

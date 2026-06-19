@@ -1,4 +1,4 @@
-import { setCurrentComponent, clearCurrentComponent, currentComponent } from '../core/hooks.js'
+import { setCurrentComponent, clearCurrentComponent, currentComponent, pushComponent, popComponent } from '../core/hooks.js'
 import { setFlushCallback } from '../core/scheduler.js'
 import { createDOMNode } from '../core/render.js'
 import { diff } from '../core/diff.js'
@@ -11,6 +11,11 @@ let instanceCounter = 0
 
 // portal ownership: parent instance id → portal instance ids
 const portalsByParent = new Map()
+
+// sub-component instances: "rootId:parentId:callIndex" → instance
+const childInstances = new Map()
+// keys accessed during the current root render — for orphan cleanup
+let activeChildKeys = null
 
 export function mountComponent(fn, props, container, index = 0, { onMount } = {}) {
   if (!fn._isComponent) {
@@ -49,12 +54,29 @@ export function mountComponent(fn, props, container, index = 0, { onMount } = {}
 }
 
 function renderInstance(instance) {
+  instance._childCallIndex = 0
+  const isRoot = !instance._rootId
+  if (isRoot) activeChildKeys = new Set()
+
   setCurrentComponent(instance)
   let vnode
   try {
     vnode = instance.fn(instance.props)
   } finally {
     clearCurrentComponent()
+  }
+
+  // clean up child instances that weren't touched this render (conditional rendering)
+  if (isRoot && activeChildKeys) {
+    for (const [key, child] of childInstances) {
+      if (child._rootId === instance.id && !activeChildKeys.has(key)) {
+        child.hooks.forEach(hook => {
+          if (hook && typeof hook === 'object' && hook.cleanup) hook.cleanup()
+        })
+        childInstances.delete(key)
+      }
+    }
+    activeChildKeys = null
   }
 
   if (instance.vnode === null) {
@@ -75,9 +97,49 @@ function renderInstance(instance) {
 
 // wire scheduler → reconciler
 setFlushCallback(component => {
+  // sub-components re-render via their root
+  if (component._rootId) {
+    const root = instances.get(component._rootId)
+    if (root) renderInstance(root)
+    return
+  }
   const instance = [...instances.values()].find(i => i === component)
   if (instance) renderInstance(instance)
 })
+
+export function renderSubComponent(fn, props) {
+  const parent = currentComponent
+  if (!parent) return fn(props)
+
+  const rootId = parent._rootId ?? parent.id
+  const key = `${rootId}:${parent.id}:${parent._childCallIndex++}`
+  if (activeChildKeys) activeChildKeys.add(key)
+
+  if (!childInstances.has(key)) {
+    childInstances.set(key, { id: ++instanceCounter, fn, hooks: [], _rootId: rootId })
+  }
+
+  const child = childInstances.get(key)
+
+  // if component type changed at this position, reset stale hook state
+  if (child.fn.displayName !== fn.displayName) {
+    child.hooks.forEach(hook => {
+      if (hook && typeof hook === 'object' && hook.cleanup) hook.cleanup()
+    })
+    child.hooks = []
+  }
+  child.fn = fn
+  child._childCallIndex = 0
+
+  pushComponent(child)
+  let vnode
+  try {
+    vnode = fn(props)
+  } finally {
+    popComponent()
+  }
+  return vnode
+}
 
 export function mountPortal(fn, props, targetNode) {
   const wrapper = document.createElement('div')
@@ -104,6 +166,16 @@ export function unmountComponent(id) {
   const portals = portalsByParent.get(id) || []
   portals.forEach(pid => unmountComponent(pid))
   portalsByParent.delete(id)
+
+  // clean up child instances owned by this root
+  for (const [key, child] of childInstances) {
+    if (child._rootId === id) {
+      child.hooks.forEach(hook => {
+        if (hook && typeof hook === 'object' && hook.cleanup) hook.cleanup()
+      })
+      childInstances.delete(key)
+    }
+  }
 
   // run effect cleanups
   instance.hooks.forEach(hook => {

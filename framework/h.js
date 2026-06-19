@@ -1,5 +1,6 @@
 import { createElement } from './core/createElement.js'
 import { registry } from './registry.js'
+import { renderSubComponent } from './runtime/reconciler.js'
 
 export function h(node) {
   if (typeof node === 'string' || typeof node === 'number') return node
@@ -24,7 +25,7 @@ export function h(node) {
 
   if (typeof type === 'string' && registry.has(type)) {
     const component = registry.get(type)
-    return component({ ...props, ...(children.length ? { children } : {}) })
+    return renderSubComponent(component, { ...props, ...(children.length ? { children } : {}) })
   }
 
   return createElement(type, props, ...children)

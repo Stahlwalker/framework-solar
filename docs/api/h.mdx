@@ -50,9 +50,6 @@ h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
 
 Prop validation still runs — a wrong prop type throws a `ContractError`.
 
-<Warning>
-Components resolved through `h()` are called as plain functions — they have no reconciler instance. This means **hooks (`useState`, `useMemo`, `useResource`, `onMount`, etc.) do not work inside them**. Keep `h()`-composed components purely presentational. All stateful logic belongs in the root component passed to `mountComponent()`.
-</Warning>
 
 ## Nested trees
 
