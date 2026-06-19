@@ -49,13 +49,13 @@
 ### Important
 - [x] **No portal / teleport mechanism** `~3–4 hrs` — added `mountPortal(fn, props, targetNode)`. Auto-registers ownership when called during render/onMount; parent unmount cascades to portals. Manual lifecycle supported via returned ID.
 - [x] **No `innerHTML` / `dangerouslySetInnerHTML`** `~30 min` — add one `if (k === 'innerHTML')` branch in `applyProps` in `render.js`.
-- [ ] **`children` not treated as a reserved prop** `~30 min` — already bypasses validation in code; docs gap only.
-- [ ] **Scaffold creates a subdirectory, not the project root** `~1–2 hrs` — add a `--root` flag to `create-solar/index.js` that sets target to `process.cwd()`.
+- [x] **`children` not treated as a reserved prop** `~30 min` — documented: omitting from schema emits a dev warning but does not throw.
+- [x] **Scaffold creates a subdirectory, not the project root** `~1–2 hrs` — added `--root` flag to `create-solar/index.js`; scaffolds into `process.cwd()`.
 
 ### Nice-to-have
-- [ ] **`style` prop duality undocumented** `~30 min` — docs only.
+- [x] **`style` prop duality undocumented** `~30 min` — documented both object and string forms in `h.mdx`.
 - [ ] **No router** `~1–2 days` — hash-based `#/about` → mount component routing. Net-new, nothing in codebase.
-- [ ] **No `<head>` / meta management** `~1–2 hrs` — small `setMeta()` wrapper around `document.title` + meta tags.
+- [x] **No `<head>` / meta management** `~1–2 hrs` — added `setMeta({ title, description, og })` utility in `framework/core/meta.js`.
 
 ### Docs gaps (~3–4 hrs total)
 - [x] Document hooks-in-child-components limitation (added Warning callout to `hooks.mdx` and `h.mdx`)

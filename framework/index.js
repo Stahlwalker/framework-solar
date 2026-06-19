@@ -1,4 +1,5 @@
 export { createElement } from './core/createElement.js'
+export { setMeta } from './core/meta.js'
 export { render } from './core/render.js'
 export { useState, useMemo, useResource, useSubscription, onMount, onUnmount } from './core/hooks.js'
 export { defineComponent } from './contract/defineComponent.js'

@@ -69,7 +69,7 @@ h(['div', { class: 'layout' },
 
 ## Children on registered components
 
-When `h()` calls a registered component and there are child nodes, they're passed as a `children` prop — not spread as arguments. The component must declare `children` in its schema to receive them.
+When `h()` calls a registered component and there are child nodes, they're passed as a `children` prop — not spread as arguments. Declare `children` in the schema to receive them:
 
 ```js
 const List = defineComponent({
@@ -89,11 +89,31 @@ h(['List', {},
 // children → [vnode, vnode] passed as a prop
 ```
 
+If you omit `children` from the schema, Solar emits a dev warning but does not throw — the prop is silently dropped from the resolved props object.
+
 For plain DOM elements (`div`, `ul`, etc.), children are passed as normal arguments to `createElement` — no prop involved.
 
 ---
 
 ## Special props
+
+### style
+
+Pass `style` as an object of camelCased CSS properties — this is the preferred form, as it merges cleanly on re-renders:
+
+```js
+h(['div', { style: { backgroundColor: '#09080a', padding: '2rem' } }])
+```
+
+String styles also work and are applied via `setAttribute`:
+
+```js
+h(['div', { style: 'background: #09080a; padding: 2rem' }])
+```
+
+Both forms produce correct output. Use the object form when styles are dynamic or component-defined; use the string form for one-off static styles.
+
+---
 
 ### innerHTML
 

@@ -25,19 +25,29 @@ function copyDir(src, dest, name) {
   }
 }
 
-const arg = process.argv[2]
-const defaultName = arg || 'my-solar-app'
+const useRoot = process.argv.includes('--root')
+const arg = process.argv.find((a, i) => i === 2 && !a.startsWith('--'))
 
 console.log('\nsolarbuild — create a new project\n')
 
-let projectName = arg || await prompt(`Project name (${defaultName}): `)
-if (!projectName) projectName = defaultName
+let projectName, targetDir
 
-const targetDir = path.resolve(process.cwd(), projectName)
-
-if (fs.existsSync(targetDir)) {
-  console.error(`\nError: directory "${projectName}" already exists.\n`)
-  process.exit(1)
+if (useRoot) {
+  projectName = path.basename(process.cwd())
+  targetDir = process.cwd()
+  const existing = fs.readdirSync(targetDir)
+  if (existing.length > 0) {
+    console.warn(`Warning: current directory is not empty — files may be overwritten.\n`)
+  }
+} else {
+  const defaultName = arg || 'my-solar-app'
+  projectName = arg || await prompt(`Project name (${defaultName}): `)
+  if (!projectName) projectName = defaultName
+  targetDir = path.resolve(process.cwd(), projectName)
+  if (fs.existsSync(targetDir)) {
+    console.error(`Error: directory "${projectName}" already exists.\n`)
+    process.exit(1)
+  }
 }
 
 const templateDir = path.join(__dirname, 'template')
@@ -48,8 +58,14 @@ const frameworkSrc = path.join(__dirname, 'framework')
 const frameworkDest = path.join(targetDir, 'solar')
 copyDir(frameworkSrc, frameworkDest, projectName)
 
-console.log(`\nCreated ${projectName}/\n`)
-console.log('Next steps:\n')
-console.log(`  cd ${projectName}`)
-console.log('  npx serve .\n')
+if (useRoot) {
+  console.log('\nScaffolded into current directory.\n')
+  console.log('Next steps:\n')
+  console.log('  npx serve .\n')
+} else {
+  console.log(`\nCreated ${projectName}/\n`)
+  console.log('Next steps:\n')
+  console.log(`  cd ${projectName}`)
+  console.log('  npx serve .\n')
+}
 console.log('Or open index.html directly in your browser.\n')
