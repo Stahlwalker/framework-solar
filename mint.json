@@ -9,7 +9,15 @@
   "colors": {
     "primary": "#f59e0b",
     "light": "#fbbf24",
-    "dark": "#b45309"
+    "dark": "#b45309",
+    "background": {
+      "dark": "#09080a",
+      "light": "#fafaf9"
+    }
+  },
+  "modeToggle": {
+    "default": "dark",
+    "isHidden": false
   },
   "topbarLinks": [
     {
@@ -33,7 +41,7 @@
     },
     {
       "group": "More",
-      "pages": ["docs/roadmap"]
+      "pages": ["docs/design-system", "docs/roadmap"]
     }
   ],
   "footerSocials": {

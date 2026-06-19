@@ -1,0 +1,235 @@
+# Design System
+
+Solar's design language is dark, minimal, and amber-accented. It's built on a small set of CSS custom properties — drop the `:root` block into any Solar project and the tokens are available everywhere.
+
+---
+
+## Color tokens
+
+```css
+:root {
+  --solar:      #f59e0b;                    /* primary amber */
+  --solar-dim:  #b45309;                    /* darker amber, hover states */
+  --solar-glow: rgba(245, 158, 11, 0.25);  /* ambient glow, box-shadows */
+
+  --text:       #f0ede8;                    /* primary text */
+  --text-dim:   #6b6860;                    /* secondary text, labels */
+
+  --surface:    rgba(255, 255, 255, 0.04);  /* card/panel fill */
+  --border:     rgba(255, 255, 255, 0.08);  /* subtle borders */
+
+  --bg:         #09080a;                    /* page background */
+}
+```
+
+| Token | Value | Use |
+|---|---|---|
+| `--solar` | `#f59e0b` | Buttons, links, active states, highlights |
+| `--solar-dim` | `#b45309` | Hover, pressed, gradient end |
+| `--solar-glow` | `rgba(245,158,11,0.25)` | `box-shadow`, ambient blur layers |
+| `--text` | `#f0ede8` | Body copy, headings |
+| `--text-dim` | `#6b6860` | Labels, captions, secondary info |
+| `--surface` | `rgba(255,255,255,0.04)` | Cards, panels, inputs |
+| `--border` | `rgba(255,255,255,0.08)` | Card borders, dividers |
+| `--bg` | `#09080a` | Page background |
+
+---
+
+## Typography
+
+Headlines use a linear gradient from warm white to amber, clipped to the text.
+
+```css
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #fff8e1 0%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+```
+
+Labels and eyebrows use uppercase + wide tracking:
+
+```css
+.label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+```
+
+---
+
+## Logo mark
+
+A radial-gradient circle — no image file required.
+
+```css
+.logo-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff8e1 0%, var(--solar) 50%, #78350f 100%);
+  box-shadow: 0 0 12px var(--solar-glow);
+}
+```
+
+Pair it with the wordmark in uppercase, `letter-spacing: 0.12em`, `color: var(--text-dim)`.
+
+---
+
+## Button
+
+Two variants: `primary` (amber fill) and `secondary` (ghost).
+
+```css
+.btn {
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn:hover  { opacity: 0.85; }
+.btn:active { transform: scale(0.96); }
+
+.btn--primary {
+  background: var(--solar);
+  color: #1a0f00;
+  box-shadow: 0 0 16px var(--solar-glow);
+}
+
+.btn--secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+```
+
+In Solar components, pass `variant: 'primary' | 'secondary'` as a prop — the Button component maps it to these classes.
+
+---
+
+## Card
+
+A frosted-glass panel. Works on the dark background with `backdrop-filter: blur`.
+
+```css
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  backdrop-filter: blur(12px);
+}
+```
+
+---
+
+## Ambient effects
+
+### Orb
+
+A large blurred radial gradient positioned off-screen top-center. Creates the warm glow behind the hero.
+
+```css
+.orb {
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #f59e0b 0%, #92400e 40%, transparent 70%);
+  opacity: 0.12;
+  filter: blur(60px);
+  pointer-events: none;
+}
+```
+
+### Stars
+
+Rendered onto a `<canvas>` that fills the viewport. 160 dots, randomized position, radius (0.2–1.4px), and opacity.
+
+```js
+const canvas = document.getElementById('stars')
+const ctx = canvas.getContext('2d')
+
+function resize() {
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+}
+resize()
+window.addEventListener('resize', resize)
+
+for (let i = 0; i < 160; i++) {
+  const x = Math.random() * canvas.width
+  const y = Math.random() * canvas.height
+  const r = Math.random() * 1.2 + 0.2
+  const a = Math.random() * 0.7 + 0.1
+  ctx.beginPath()
+  ctx.arc(x, y, r, 0, Math.PI * 2)
+  ctx.fillStyle = `rgba(255,255,255,${a})`
+  ctx.fill()
+}
+```
+
+### Orbit ring
+
+An animated ring used in the hero. Built entirely with `::before` / `::after` pseudo-elements — no extra markup inside.
+
+```css
+.orbit-ring {
+  width: 80px;
+  height: 80px;
+  position: relative;
+}
+
+/* ring */
+.orbit-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(245, 158, 11, 0.35);
+  animation: spin 8s linear infinite;
+}
+
+/* orbiting dot */
+.orbit-ring::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--solar);
+  box-shadow: 0 0 8px var(--solar);
+  animation: spin 8s linear infinite;
+}
+
+/* core orb */
+.orbit-core {
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff8e1 0%, var(--solar) 55%, #78350f 100%);
+  box-shadow: 0 0 20px var(--solar-glow);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+```

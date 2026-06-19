@@ -66,7 +66,7 @@ const LifecycleDemo = defineComponent({
     const [log, setLog] = useState([])
 
     onMount(() => setLog(l => [...l, 'mounted']))
-    onUnmount(() => console.log('LifecycleDemo unmounted'))
+    onUnmount(() => setLog(l => [...l, 'unmounted']))
 
     useSubscription({
       source: window,

@@ -197,13 +197,33 @@ cd my-app
 npm run dev
 ```
 
-Or use the CDN directly in any HTML file:
+Or use the CDN directly — no install, no build step:
 
 ```html
-<script type="module">
-  import { defineComponent, mountComponent, useState, createElement }
-    from 'https://cdn.jsdelivr.net/gh/Stahlwalker/framework-solar@main/framework/index.js'
-</script>
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import {
+      defineComponent, mountComponent, registry,
+      useState, createElement
+    } from 'https://cdn.jsdelivr.net/npm/solarbuild/framework/index.js'
+
+    const Counter = defineComponent({
+      name: 'Counter',
+      props: {},
+      render() {
+        const [count, setCount] = useState(0)
+        return createElement('button', { onclick: () => setCount(n => n + 1) }, `Clicked ${count} times`)
+      }
+    })
+
+    registry.register(Counter)
+    mountComponent(Counter, {}, document.getElementById('app'))
+  </script>
+</body>
+</html>
 ```
 
 ## Running the demo
@@ -214,7 +234,7 @@ npm run dev
 
 Open `http://localhost:3456/demo/` (trailing slash required — static server quirk).
 
-The demo covers all nine build phases: static rendering, diffing, hooks, contract validation, declared effects, batched updates, registry manifest, compact h() notation, and typed slots.
+The demo covers all framework features: static rendering, diffing, hooks, contract validation, declared effects, batched updates, registry manifest, compact h() notation, and typed slots.
 
 ---
 
