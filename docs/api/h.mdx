@@ -50,6 +50,10 @@ h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
 
 Prop validation still runs — a wrong prop type throws a `ContractError`.
 
+<Warning>
+Components resolved through `h()` are called as plain functions — they have no reconciler instance. This means **hooks (`useState`, `useMemo`, `useResource`, `onMount`, etc.) do not work inside them**. Keep `h()`-composed components purely presentational. All stateful logic belongs in the root component passed to `mountComponent()`.
+</Warning>
+
 ## Nested trees
 
 ```js
@@ -86,6 +90,20 @@ h(['List', {},
 ```
 
 For plain DOM elements (`div`, `ul`, etc.), children are passed as normal arguments to `createElement` — no prop involved.
+
+---
+
+## Special props
+
+### innerHTML
+
+Set raw HTML on a DOM node by passing an `innerHTML` prop. Children are ignored when this prop is present.
+
+```js
+h(['div', { class: 'highlight', innerHTML: '<span class="token keyword">const</span> x = 1' }])
+```
+
+Use this when you need to inject pre-rendered or syntax-highlighted HTML — for example, output from Prism.js or a markdown renderer. Only use it with trusted content.
 
 ---
 

@@ -2,6 +2,10 @@
 
 Solar's hooks manage state, async data, subscriptions, and lifecycle. All hooks must be called inside a component's `render` function — never conditionally, never outside a component.
 
+<Warning>
+**Hooks only work in root-mounted components.** A component passed directly to `mountComponent()` has a reconciler instance and full hook support. A component resolved through `h()` (registry dispatch) is called as a plain function with no reconciler context — `useState`, `useMemo`, `useResource`, and lifecycle hooks will throw or silently fail inside it. Keep all stateful logic in root components and keep `h()`-composed components purely presentational.
+</Warning>
+
 ---
 
 ## useState

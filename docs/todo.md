@@ -48,7 +48,7 @@
 
 ### Important
 - [ ] **No portal / teleport mechanism** `~3–4 hrs` — no way to render outside `#app`. Add a `mountPortal(component, domNode)` utility that calls `mountComponent()` into an arbitrary DOM target.
-- [ ] **No `innerHTML` / `dangerouslySetInnerHTML`** `~30 min` — add one `if (k === 'innerHTML')` branch in `applyProps` in `render.js`.
+- [x] **No `innerHTML` / `dangerouslySetInnerHTML`** `~30 min` — add one `if (k === 'innerHTML')` branch in `applyProps` in `render.js`.
 - [ ] **`children` not treated as a reserved prop** `~30 min` — already bypasses validation in code; docs gap only.
 - [ ] **Scaffold creates a subdirectory, not the project root** `~1–2 hrs` — add a `--root` flag to `create-solar/index.js` that sets target to `process.cwd()`.
 
@@ -58,11 +58,11 @@
 - [ ] **No `<head>` / meta management** `~1–2 hrs` — small `setMeta()` wrapper around `document.title` + meta tags.
 
 ### Docs gaps (~3–4 hrs total)
-- [ ] Document hooks-in-child-components limitation (most consequential undocumented constraint)
-- [ ] Document children/slots pattern — how `h()` forwards children as a prop
-- [ ] Document `h()` vs `createElement()` trade-offs and when to use each
-- [ ] Add third-party library integration guide (CDN loading + post-mount timing pattern)
-- [ ] Add deployment guide (GitHub Pages, Netlify, Cloudflare Pages — scaffold subdirectory gotcha)
-- [ ] Document `onMount` workaround (post-`mountComponent()` script ordering)
+- [x] Document hooks-in-child-components limitation (added Warning callout to `hooks.mdx` and `h.mdx`)
+- [x] Document children/slots pattern — how `h()` forwards children as a prop (already covered in `h.mdx`)
+- [x] Document `h()` vs `createElement()` trade-offs and when to use each (already covered in `h.mdx`)
+- [x] Add third-party library integration guide (CDN loading + post-mount timing pattern — added to `building-a-site.mdx`)
+- [x] Add deployment guide (GitHub Pages subdirectory gotcha — added to `building-a-site.mdx`)
+- [x] Document `onMount` workaround (post-`mountComponent()` script ordering — added to `building-a-site.mdx`)
 
 > **Sprint estimate:** ~2 days without router, ~1 week with. Fast wins: `innerHTML` prop (30 min) and `onMount` (2 hrs).

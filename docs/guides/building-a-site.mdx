@@ -238,6 +238,32 @@ See the [Design System](/docs/design-system) page for the full token reference a
 
 ---
 
+## Third-party libraries
+
+Load external libraries via CDN `<script>` tags in `index.html`. Two things to get right:
+
+1. The CDN script must appear **before** your Solar module so the global is available when your code runs.
+2. Any library that needs to scan the DOM (Prism.js, Highlight.js, etc.) must run **after** `mountComponent()` populates it.
+
+Since `mountComponent()` is synchronous and ES modules execute in document order, this ordering works reliably:
+
+```html
+<!-- 1. third-party lib (non-module, loads before ES modules) -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js" data-manual></script>
+
+<!-- 2. your Solar app -->
+<script type="module" src="./main.js"></script>
+
+<!-- 3. post-mount work — runs after main.js completes -->
+<script type="module">
+  if (window.Prism) Prism.highlightAll()
+</script>
+```
+
+If you need canvas setup, scroll listeners, or other DOM-dependent initialization, put them in the third `<script type="module">` block the same way.
+
+---
+
 ## Deploying
 
 Since Solar is runtime-only with no build step, deploying is just serving static files.
@@ -248,5 +274,15 @@ npx vercel
 ```
 
 **Netlify:** drag and drop the project folder into the Netlify dashboard.
+
+**GitHub Pages:** Pages can only serve from the repo root or a `/docs` folder. The scaffold creates files inside a subdirectory (`my-site/`), so you'll need to move them before pushing:
+
+```bash
+npm create solarbuild@latest my-site
+cp -r my-site/. .
+rm -rf my-site
+```
+
+Then in your repo settings, set Pages source to the root branch.
 
 **Any static host:** upload the folder — there's nothing to build.
