@@ -1,0 +1,142 @@
+---
+title: "Router"
+---
+
+# Router
+
+A hash-based router for multi-page Solar apps. Routes map URL fragments (`#/about`) to components. No server configuration needed — works with any static host.
+
+```js
+import { createRouter } from 'solarbuild'
+import HomePage   from './pages/HomePage.js'
+import AboutPage  from './pages/AboutPage.js'
+import PostPage   from './pages/PostPage.js'
+import NotFound   from './pages/NotFound.js'
+
+const router = createRouter({
+  '/':          HomePage,
+  '/about':     AboutPage,
+  '/post/:id':  PostPage,
+  '*':          NotFound,
+})
+
+router.mount(document.getElementById('app'))
+```
+
+## createRouter(routes)
+
+Creates a router. `routes` is a plain object mapping route patterns to Solar components.
+
+| Pattern | Matches |
+|---|---|
+| `'/'` | `#/` or no hash |
+| `'/about'` | `#/about` |
+| `'/post/:id'` | `#/post/123` — captures `{ id: '123' }` |
+| `'*'` | anything unmatched — use as a 404 fallback |
+
+Patterns are matched in definition order. Put `'*'` last.
+
+### router.mount(el)
+
+Renders the current route into `el` and listens for hash changes. Call once in `main.js`.
+
+### router.navigate(path)
+
+Programmatically navigate. Equivalent to setting `window.location.hash`.
+
+```js
+router.navigate('/about')
+```
+
+## navigate(path)
+
+Top-level navigate function — same as `router.navigate()`, available anywhere without holding a router reference.
+
+```js
+import { navigate } from 'solarbuild'
+
+navigate('/post/42')
+```
+
+For simple links, plain anchors work without any JS:
+
+```js
+h(['a', { href: '#/about' }, 'About'])
+```
+
+## useRoute()
+
+Returns the current route inside a component. Call it like any other hook.
+
+```js
+import { useRoute } from 'solarbuild'
+
+const PostPage = defineComponent({
+  name: 'PostPage',
+  props: {},
+  render() {
+    const { path, params } = useRoute()
+    return h(['article', {},
+      ['h1', {}, `Post ${params.id}`],
+      ['p', {}, `Current path: ${path}`],
+    ])
+  },
+})
+```
+
+**Returns:** `{ path, params }` where `path` is the current hash path (e.g. `'/post/42'`) and `params` is an object of captured `:param` values.
+
+## Route components
+
+Route components are regular Solar components. They don't need to be pre-registered — the router auto-registers them on first render. Props passed to the component are the captured route params.
+
+```js
+const PostPage = defineComponent({
+  name: 'PostPage',
+  props: {
+    id: { type: 'string', required: true },
+  },
+  render({ id }) {
+    // id comes from the :id param in '/post/:id'
+    return h(['h1', {}, `Post ${id}`])
+  },
+})
+```
+
+## Full example
+
+```
+my-app/
+├── index.html
+├── main.js
+└── pages/
+    ├── HomePage.js
+    ├── AboutPage.js
+    └── NotFound.js
+```
+
+```js
+// main.js
+import { createRouter } from './solar/index.js'
+import HomePage  from './pages/HomePage.js'
+import AboutPage from './pages/AboutPage.js'
+import NotFound  from './pages/NotFound.js'
+
+const router = createRouter({
+  '/':       HomePage,
+  '/about':  AboutPage,
+  '*':       NotFound,
+})
+
+router.mount(document.getElementById('app'))
+```
+
+```html
+<!-- index.html -->
+<nav>
+  <a href="#/">Home</a>
+  <a href="#/about">About</a>
+</nav>
+<div id="app"></div>
+<script type="module" src="./main.js"></script>
+```

@@ -54,7 +54,7 @@
 
 ### Nice-to-have
 - [x] **`style` prop duality undocumented** `~30 min` — documented both object and string forms in `h.mdx`.
-- [ ] **No router** `~1–2 days` — hash-based `#/about` → mount component routing. Net-new, nothing in codebase.
+- [x] **No router** `~1–2 days` — hash-based router with `:param` patterns, `*` wildcard, `useRoute()` hook, `navigate()`, auto-registration of route components.
 - [x] **No `<head>` / meta management** `~1–2 hrs` — added `setMeta({ title, description, og })` utility in `framework/core/meta.js`.
 
 ### Docs gaps (~3–4 hrs total)
