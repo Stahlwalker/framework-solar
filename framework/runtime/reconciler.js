@@ -1,4 +1,4 @@
-import { setCurrentComponent, clearCurrentComponent } from '../core/hooks.js'
+import { setCurrentComponent, clearCurrentComponent, currentComponent } from '../core/hooks.js'
 import { setFlushCallback } from '../core/scheduler.js'
 import { createDOMNode } from '../core/render.js'
 import { diff } from '../core/diff.js'
@@ -9,7 +9,10 @@ import { ContractError } from '../contract/ContractError.js'
 const instances = new Map()
 let instanceCounter = 0
 
-export function mountComponent(fn, props, container, index = 0) {
+// portal ownership: parent instance id → portal instance ids
+const portalsByParent = new Map()
+
+export function mountComponent(fn, props, container, index = 0, { onMount } = {}) {
   if (!fn._isComponent) {
     throw new ContractError({
       component: fn.displayName || fn.name || 'Unknown',
@@ -41,6 +44,7 @@ export function mountComponent(fn, props, container, index = 0) {
 
   instances.set(id, instance)
   renderInstance(instance)
+  if (typeof onMount === 'function') queueMicrotask(onMount)
   return id
 }
 
@@ -75,16 +79,44 @@ setFlushCallback(component => {
   if (instance) renderInstance(instance)
 })
 
+export function mountPortal(fn, props, targetNode) {
+  const wrapper = document.createElement('div')
+  targetNode.appendChild(wrapper)
+
+  const portalId = mountComponent(fn, props, wrapper)
+  instances.get(portalId)._portalRoot = wrapper
+
+  // auto-register ownership when called during a parent render or onMount
+  if (currentComponent) {
+    const parentId = currentComponent.id
+    if (!portalsByParent.has(parentId)) portalsByParent.set(parentId, [])
+    portalsByParent.get(parentId).push(portalId)
+  }
+
+  return portalId
+}
+
 export function unmountComponent(id) {
   const instance = instances.get(id)
   if (!instance) return
+
+  // cascade: tear down owned portals before cleaning up this instance
+  const portals = portalsByParent.get(id) || []
+  portals.forEach(pid => unmountComponent(pid))
+  portalsByParent.delete(id)
 
   // run effect cleanups
   instance.hooks.forEach(hook => {
     if (hook && typeof hook === 'object' && hook.cleanup) hook.cleanup()
   })
 
-  const dom = instance.domParent.childNodes[instance.domIndex]
-  if (dom) instance.domParent.removeChild(dom)
+  // portals own their wrapper div; regular instances own a slot by index
+  if (instance._portalRoot) {
+    instance._portalRoot.parentNode?.removeChild(instance._portalRoot)
+  } else {
+    const dom = instance.domParent.childNodes[instance.domIndex]
+    if (dom) instance.domParent.removeChild(dom)
+  }
+
   instances.delete(id)
 }

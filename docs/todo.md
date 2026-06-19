@@ -44,10 +44,10 @@
 
 ### Critical (~1–2 days each)
 - [ ] **Hooks don't work in sub-components** `~1–2 days` — `h.js` calls registry components directly, bypassing `setCurrentComponent()`. Fix = spawn child reconciler instances in `h()`. Touches the whole render pipeline.
-- [ ] **No `onMount` lifecycle** `~2 hrs` — `mountComponent()` is synchronous and returns nothing. Add an `{ onMount }` option or a returned handle with `.onMount(fn)`.
+- [x] **No `onMount` lifecycle** `~2 hrs` — added `{ onMount }` option to `mountComponent()` for out-of-component use (canvas, scroll listeners, etc.). Hook-based `onMount` already existed for root components.
 
 ### Important
-- [ ] **No portal / teleport mechanism** `~3–4 hrs` — no way to render outside `#app`. Add a `mountPortal(component, domNode)` utility that calls `mountComponent()` into an arbitrary DOM target.
+- [x] **No portal / teleport mechanism** `~3–4 hrs` — added `mountPortal(fn, props, targetNode)`. Auto-registers ownership when called during render/onMount; parent unmount cascades to portals. Manual lifecycle supported via returned ID.
 - [x] **No `innerHTML` / `dangerouslySetInnerHTML`** `~30 min` — add one `if (k === 'innerHTML')` branch in `applyProps` in `render.js`.
 - [ ] **`children` not treated as a reserved prop** `~30 min` — already bypasses validation in code; docs gap only.
 - [ ] **Scaffold creates a subdirectory, not the project root** `~1–2 hrs` — add a `--root` flag to `create-solar/index.js` that sets target to `process.cwd()`.

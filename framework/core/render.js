@@ -13,7 +13,9 @@ export function createDOMNode(vnode) {
 
   const el = document.createElement(vnode.type)
   applyProps(el, {}, vnode.props)
-  vnode.children.forEach(child => el.appendChild(createDOMNode(child)))
+  if (!vnode.props.innerHTML) {
+    vnode.children.forEach(child => el.appendChild(createDOMNode(child)))
+  }
   return el
 }
 
@@ -38,6 +40,8 @@ export function applyProps(el, oldProps, newProps) {
       Object.assign(el.style, v)
     } else if (k === 'className') {
       el.className = v
+    } else if (k === 'innerHTML') {
+      el.innerHTML = v
     } else if (v !== oldProps[k]) {
       el.setAttribute(k, v)
     }

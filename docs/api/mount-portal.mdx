@@ -1,0 +1,105 @@
+---
+title: "mountPortal"
+---
+
+# mountPortal
+
+Mounts a Solar component into an arbitrary DOM node — outside the normal component tree. Use for fixed overlays, modals, toasts, ambient visual layers, or anything that needs to live at the `<body>` level regardless of where it's triggered.
+
+```js
+import { mountPortal } from 'solarbuild'
+
+const portalId = mountPortal(Modal, { title: 'Confirm' }, document.body)
+```
+
+## Syntax
+
+```js
+mountPortal(component, props, targetNode)
+```
+
+| Param | Type | Description |
+|---|---|---|
+| `component` | Component | A component created with `defineComponent()` and registered via `registry.register()` |
+| `props` | object | Props passed to the component |
+| `targetNode` | HTMLElement | The DOM node to mount into. Commonly `document.body` or a dedicated `#portal-root` element |
+
+**Returns:** a portal ID (number). Pass it to `unmountComponent()` to tear the portal down.
+
+## Automatic lifecycle
+
+When `mountPortal` is called inside a component's `render` function or `onMount` callback, it automatically registers the portal as owned by that component. When the parent component unmounts, all its portals unmount with it — no manual cleanup needed.
+
+```js
+const Tooltip = defineComponent({
+  name: 'Tooltip',
+  props: { text: { type: 'string', required: true } },
+  render({ text }) {
+    onMount(() => {
+      mountPortal(TooltipOverlay, { text }, document.body)
+      // portal tears down automatically when Tooltip unmounts
+    })
+    return createElement('span', { class: 'tooltip-anchor' }, text)
+  },
+})
+```
+
+## Manual lifecycle
+
+When called outside a component context (e.g. from `main.js`), ownership isn't tracked — hold the portal ID and unmount it yourself:
+
+```js
+import { mountPortal, unmountComponent } from 'solarbuild'
+
+const id = mountPortal(StarField, {}, document.body)
+
+// later:
+unmountComponent(id)
+```
+
+## DOM structure
+
+Each portal appends a wrapper `<div>` to the target node, then mounts the component inside it. This gives every portal a stable, owned root so multiple portals to the same target don't collide:
+
+```html
+<body>
+  <div id="app">...</div>
+  <div><!-- StarField portal --></div>
+  <div><!-- Modal portal --></div>
+</body>
+```
+
+The wrapper is removed automatically on unmount.
+
+## Example: fixed overlay
+
+```js
+// StarField.js
+import { defineComponent, registry, createElement } from 'solarbuild'
+
+const StarField = defineComponent({
+  name: 'StarField',
+  props: {},
+  render() {
+    onMount(() => {
+      const canvas = document.querySelector('canvas.stars')
+      startAnimation(canvas)
+    })
+    onUnmount(() => stopAnimation())
+    return createElement('canvas', { class: 'stars', style: { position: 'fixed', inset: '0', zIndex: '-1' } })
+  },
+})
+
+registry.register(StarField)
+export default StarField
+```
+
+```js
+// main.js
+import { mountComponent, mountPortal } from 'solarbuild'
+import App from './components/App.js'
+import StarField from './components/StarField.js'
+
+mountComponent(App, {}, document.getElementById('app'))
+mountPortal(StarField, {}, document.body)
+```

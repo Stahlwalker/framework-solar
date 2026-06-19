@@ -135,6 +135,19 @@ onMount(() => {
   Runs once. Not called on subsequent re-renders.
 </ParamField>
 
+For code that needs to run after mount but lives **outside** a component (canvas animation, third-party widget init, scroll listeners), pass an `onMount` option to `mountComponent()` instead:
+
+```js
+mountComponent(App, {}, document.getElementById('app'), 0, {
+  onMount: () => {
+    const canvas = document.querySelector('canvas.stars')
+    startStarField(canvas)
+  }
+})
+```
+
+Both forms run via `queueMicrotask` — after the current render cycle, once the DOM is ready.
+
 ---
 
 ## onUnmount
