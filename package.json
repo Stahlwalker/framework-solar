@@ -1,8 +1,14 @@
 {
   "name": "solarbuild",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "A runtime-based JavaScript UI framework designed around a constraint most frameworks ignore: a lot of the code targeting it won't be written by a human.",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://docs.solarbuild.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Stahlwalker/framework-solar"
+  },
   "main": "./framework/index.js",
   "exports": {
     ".": "./framework/index.js"
