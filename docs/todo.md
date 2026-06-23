@@ -82,7 +82,7 @@
 - [x] **Bing Webmaster Tools** — imported from GSC; sitemap included
 - [x] **Ahrefs project** — created with `docs.solarbuild.dev`
 - [x] **Add `llms.txt` to `solarbuild.dev`** — added to solar-site repo
-- [ ] **`llms-full.txt`** — extended version with code examples and full API signatures (optional, for richer AI context)
+- [x] **`llms-full.txt`** — full API reference with all signatures, examples, and error formats inline
 - [x] **Open Graph meta tags** — added to `solarbuild.dev` homepage
 - [x] **Structured data (JSON-LD)** — added `SoftwareApplication` schema to `solarbuild.dev` homepage
 

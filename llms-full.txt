@@ -1,0 +1,532 @@
+# Solar — Full API Reference
+
+> A runtime-based JavaScript UI framework designed for AI-generated code. No build step. Explicit prop contracts, structured errors, and a machine-readable component registry.
+
+Solar runs entirely in the browser via CDN or npm. Every component declares a typed prop schema. Violations throw structured `ContractError` objects before the component renders. The global registry exposes `manifest()` — a JSON string of every registered component and its schema, designed to be passed directly to an AI agent as context.
+
+---
+
+## Installation
+
+### CDN (no install)
+
+```html
+<script type="module">
+  import { defineComponent, mountComponent, useState, createElement }
+    from 'https://cdn.jsdelivr.net/npm/solarbuild/framework/index.js'
+</script>
+```
+
+### npm
+
+```bash
+npm install solarbuild
+```
+
+```js
+import { defineComponent, mountComponent, useState, createElement } from 'solarbuild'
+```
+
+### Scaffold
+
+```bash
+npm create solarbuild@latest my-app
+cd my-app && npm run dev
+```
+
+---
+
+## Project structure
+
+```
+my-app/
+├── index.html
+├── main.js           # mounts root components
+└── components/
+    ├── Button.js     # one component per file
+    ├── Counter.js    # file name matches component name
+    └── UserCard.js   # default export is always defineComponent(...)
+```
+
+---
+
+## defineComponent(config)
+
+The core primitive. Defines a component with a typed prop schema.
+
+```js
+import { defineComponent, createElement, registry } from 'solarbuild'
+
+const Button = defineComponent({
+  name: 'Button',
+  props: {
+    label:   { type: 'string',   required: true },
+    onClick: { type: 'function', required: true },
+    variant: { type: 'string',   enum: ['primary', 'secondary'], default: 'primary' },
+  },
+  render({ label, onClick, variant }) {
+    return createElement('button', { class: variant, onclick: onClick }, label)
+  },
+})
+
+registry.register(Button)
+export default Button
+```
+
+### Config
+
+| Field    | Type     | Required | Description |
+|----------|----------|----------|-------------|
+| `name`   | string   | yes      | Unique component name. Used in errors, registry, slot validation |
+| `props`  | object   | no       | Schema of accepted props |
+| `render` | function | yes      | Receives resolved props, returns a vnode |
+
+### Prop descriptor fields
+
+| Field      | Type    | Description |
+|------------|---------|-------------|
+| `type`     | string  | `string`, `number`, `boolean`, `function`, `object`, `array`, `any`, `slot` |
+| `required` | boolean | Throws if missing or null |
+| `default`  | any     | Value used when prop is not passed |
+| `enum`     | array   | Restricts value to a list of allowed strings |
+| `accepts`  | string  | For `slot` type only — restricts to a specific component name |
+
+### Types helper
+
+```js
+import { Types } from 'solarbuild'
+Types.string   // 'string'
+Types.number   // 'number'
+Types.boolean  // 'boolean'
+Types.function // 'function'
+Types.object   // 'object'
+Types.array    // 'array'
+Types.any      // 'any'
+Types.slot     // 'slot'
+```
+
+### Return value
+
+`defineComponent` returns a component function. Call it with props to get a vnode:
+
+```js
+Button({ label: 'Save', onClick: handleSave, variant: 'primary' })
+```
+
+### Slots (typed composition)
+
+```js
+const Card = defineComponent({
+  name: 'Card',
+  props: {
+    title:  { type: 'string', required: true },
+    action: { type: 'slot',   accepts: 'Button' }, // must be a Button vnode
+  },
+  render({ title, action }) {
+    return createElement('div', { class: 'card' },
+      createElement('h2', {}, title),
+      action,
+    )
+  },
+})
+
+// valid
+Card({ title: 'Hello', action: Button({ label: 'Go', onClick: () => {} }) })
+
+// throws ContractError — plain createElement vnode has no _source tag
+Card({ title: 'Hello', action: createElement('button', {}, 'Go') })
+```
+
+---
+
+## ContractError
+
+When a prop contract is violated, Solar throws a `ContractError` immediately — before the component renders.
+
+```json
+{
+  "error": "ContractError",
+  "component": "Button",
+  "prop": "label",
+  "expected": "string",
+  "received": "number",
+  "fix": "Pass a string value for \"label\"",
+  "message": "Button: prop \"label\": expected string, got number"
+}
+```
+
+Use `e.toJSON()` for the structured object. Use `e.message` for the human-readable string.
+
+---
+
+## mountComponent(component, props, el, depth?, options?)
+
+Renders a component into a DOM node.
+
+```js
+import { mountComponent } from 'solarbuild'
+import Button from './components/Button.js'
+
+mountComponent(Button, {
+  label: 'Click me',
+  onClick: () => console.log('clicked'),
+}, document.getElementById('app'))
+```
+
+### onMount option
+
+For code that runs after mount but lives outside a component:
+
+```js
+mountComponent(App, {}, document.getElementById('app'), 0, {
+  onMount: () => {
+    const canvas = document.querySelector('canvas')
+    startAnimation(canvas)
+  }
+})
+```
+
+---
+
+## Hooks
+
+All hooks must be called inside a component's `render` function — never conditionally, never outside a component.
+
+### useState(initial)
+
+```js
+const [count, setCount] = useState(0)
+
+setCount(5)                  // set directly
+setCount(c => c + 1)         // set from previous value (preferred for derived updates)
+```
+
+Setter skips re-render if the new value is strictly equal to the previous.
+
+Lazy initialization — pass a function to compute the initial value once:
+
+```js
+const [data, setData] = useState(() => JSON.parse(localStorage.getItem('cache')))
+```
+
+**Returns:** `[value, setter]`
+
+---
+
+### useMemo(compute, deps)
+
+Caches an expensive computation. Recomputes only when deps change.
+
+```js
+const sorted = useMemo(
+  () => items.slice().sort((a, b) => a.name.localeCompare(b.name)),
+  [items]
+)
+```
+
+`deps` can be an array or plain object — compared by value, not reference.
+
+**Returns:** the cached value.
+
+---
+
+### useResource({ key, fetch })
+
+Fetches async data. Re-fetches when `key` changes. Automatically cancels the previous in-flight request.
+
+```js
+const { data, loading, error } = useResource({
+  key: userId,
+  fetch: async (signal) => {
+    const res = await fetch(`/api/user/${userId}`, { signal })
+    return res.json()
+  },
+})
+
+if (loading) return createElement('p', {}, 'Loading...')
+if (error)   return createElement('p', {}, error.message)
+return createElement('p', {}, data.name)
+```
+
+| Field     | Type    | Description |
+|-----------|---------|-------------|
+| `data`    | any     | Resolved value from the last successful fetch, or null on first load |
+| `loading` | boolean | True while a fetch is in flight |
+| `error`   | Error\|null | Set if the fetch threw, null otherwise |
+
+Previous data remains available during a key transition — `data` is not cleared to null.
+
+---
+
+### useSubscription({ source, event, handler })
+
+Attaches an event listener and removes it on unmount or when any parameter changes.
+
+```js
+const [width, setWidth] = useState(window.innerWidth)
+
+useSubscription({
+  source:  window,
+  event:   'resize',
+  handler: () => setWidth(window.innerWidth),
+})
+```
+
+Works with DOM `EventTarget`s (`.addEventListener`) and Node-style emitters (`.on`).
+
+---
+
+### onMount(fn)
+
+Runs once after the component's first render. Not called on re-renders.
+
+```js
+onMount(() => {
+  analytics.track('component_mounted')
+})
+```
+
+---
+
+### onUnmount(fn)
+
+Runs once when the component is removed from the DOM.
+
+```js
+onUnmount(() => {
+  subscription.cancel()
+  clearInterval(timer)
+})
+```
+
+---
+
+### useRoute()
+
+Returns the current hash route inside a component.
+
+```js
+import { useRoute } from 'solarbuild'
+
+const PostPage = defineComponent({
+  name: 'PostPage',
+  props: {},
+  render() {
+    const { path, params } = useRoute()
+    return h(['h1', {}, `Post ${params.id} at ${path}`])
+  },
+})
+```
+
+**Returns:** `{ path, params }` — `path` is the current hash path (e.g. `'/post/42'`), `params` is an object of captured `:param` values.
+
+---
+
+## h(node) — Compact notation
+
+Array-based alternative to `createElement`. Easier to generate programmatically.
+
+```js
+import { h } from 'solarbuild'
+
+h(['div', { class: 'card' },
+  ['h2', {}, 'Title'],
+  ['p',  {}, 'Body'],
+])
+```
+
+Each node: `[type, props?, ...children]`
+
+- `type` — tag name string (`'div'`) or registered component name (`'Button'`)
+- `props` — optional object of attributes or props
+- `children` — nested arrays or primitives
+
+### Registry dispatch
+
+If `type` matches a registered component name, `h()` calls that component — prop validation still runs:
+
+```js
+h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
+// equivalent to: Button({ label: 'Save', onClick: handleSave, variant: 'primary' })
+```
+
+### Special props
+
+**style** — object (preferred) or string:
+
+```js
+h(['div', { style: { backgroundColor: '#09080a', padding: '2rem' } }])
+h(['div', { style: 'background: #09080a' }])
+```
+
+**innerHTML** — set raw HTML; children are ignored when present:
+
+```js
+h(['div', { innerHTML: '<span class="keyword">const</span> x = 1' }])
+```
+
+---
+
+## Registry
+
+Central store of all registered components.
+
+```js
+import { registry } from 'solarbuild'
+```
+
+### registry.register(component)
+
+```js
+registry.register(Button)
+```
+
+Throws if the argument was not created with `defineComponent`.
+
+### registry.get(name)
+
+```js
+const Button = registry.get('Button')  // component function or undefined
+```
+
+### registry.has(name)
+
+```js
+if (registry.has('Button')) { ... }
+```
+
+### registry.list()
+
+Returns an array of all components with their schemas:
+
+```js
+registry.list()
+// [{ name: 'Button', props: { label: { type: 'string', required: true }, ... } }]
+```
+
+### registry.manifest()
+
+Returns `registry.list()` serialized as a JSON string. Pass this to an AI agent as context — the agent can read it and know exactly what components exist and how to call them:
+
+```js
+const context = registry.manifest()
+// pass as part of a system prompt, tool result, or MCP resource
+```
+
+Example output:
+
+```json
+[
+  {
+    "name": "Button",
+    "props": {
+      "label":   { "type": "string",   "required": true },
+      "onClick": { "type": "function", "required": true },
+      "variant": { "type": "string",   "enum": ["primary", "secondary"], "default": "primary" }
+    }
+  }
+]
+```
+
+---
+
+## Router
+
+Hash-based router. No server config needed — works on any static host.
+
+```js
+import { createRouter } from 'solarbuild'
+
+const router = createRouter({
+  '/':         HomePage,
+  '/about':    AboutPage,
+  '/post/:id': PostPage,
+  '*':         NotFound,   // 404 fallback — must be last
+})
+
+router.mount(document.getElementById('app'))
+```
+
+### Route patterns
+
+| Pattern       | Matches                          |
+|---------------|----------------------------------|
+| `'/'`         | `#/` or no hash                  |
+| `'/about'`    | `#/about`                        |
+| `'/post/:id'` | `#/post/123` → `params.id = '123'` |
+| `'*'`         | anything unmatched               |
+
+### router.navigate(path) / navigate(path)
+
+```js
+import { navigate } from 'solarbuild'
+navigate('/post/42')
+```
+
+### Route components receive params as props
+
+```js
+const PostPage = defineComponent({
+  name: 'PostPage',
+  props: { id: { type: 'string', required: true } },
+  render({ id }) {
+    return h(['h1', {}, `Post ${id}`])
+  },
+})
+```
+
+---
+
+## mountPortal(component, props, targetEl)
+
+Renders a component into any DOM node — useful for modals, toasts, overlays:
+
+```js
+import { mountPortal } from 'solarbuild'
+
+mountPortal(Modal, { title: 'Confirm', onClose: () => {} }, document.body)
+```
+
+---
+
+## Full minimal app
+
+```html
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import {
+      defineComponent, mountComponent,
+      useState, createElement, registry
+    } from 'https://cdn.jsdelivr.net/npm/solarbuild/framework/index.js'
+
+    const Counter = defineComponent({
+      name: 'Counter',
+      props: {
+        label: { type: 'string', default: 'Count' },
+      },
+      render({ label }) {
+        const [count, setCount] = useState(0)
+        return createElement('div', {},
+          createElement('p', {}, `${label}: ${count}`),
+          createElement('button', { onclick: () => setCount(c => c + 1) }, '+'),
+        )
+      },
+    })
+
+    registry.register(Counter)
+    mountComponent(Counter, { label: 'Score' }, document.getElementById('app'))
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Links
+
+- Docs: https://docs.solarbuild.dev
+- npm: https://www.npmjs.com/package/solarbuild
+- GitHub: https://github.com/Stahlwalker/framework-solar

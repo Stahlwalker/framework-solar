@@ -7,6 +7,16 @@ Open a GitHub issue. Include:
 - What actually happened (paste the full `ContractError` JSON if applicable)
 - A minimal reproduction
 
+## Setup
+
+After cloning, activate the shared git hooks:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This enables a pre-commit hook that warns if you change `docs/api/` or `framework/` without updating `llms-full.txt`. Use `git commit --no-verify` to skip if you intentionally want to defer the update.
+
 ## Pull requests
 
 1. Fork the repo and create a branch from `main`

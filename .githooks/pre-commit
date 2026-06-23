@@ -1,0 +1,23 @@
+#!/bin/sh
+# Warn if API docs or framework source changed without updating llms-full.txt
+
+WATCHED="docs/api/ framework/"
+LLM_FILE="llms-full.txt"
+
+changed_watched=$(git diff --cached --name-only | grep -E "^(docs/api/|framework/)")
+changed_llm=$(git diff --cached --name-only | grep -F "$LLM_FILE")
+
+if [ -n "$changed_watched" ] && [ -z "$changed_llm" ]; then
+  echo ""
+  echo "  Warning: API or framework files changed without updating $LLM_FILE"
+  echo ""
+  echo "  Changed:"
+  echo "$changed_watched" | sed 's/^/    /'
+  echo ""
+  echo "  Update $LLM_FILE to keep it in sync, then re-commit."
+  echo "  To skip this check: git commit --no-verify"
+  echo ""
+  exit 1
+fi
+
+exit 0
