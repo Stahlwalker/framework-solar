@@ -77,10 +77,11 @@
 - [x] `sitemap.xml` — all 11 pages with priorities; served at `docs.solarbuild.dev/sitemap.xml`
 
 ### To Do
-- [ ] **Google Search Console** — verify ownership of `solarbuild.dev` and `docs.solarbuild.dev`; submit sitemap (`https://docs.solarbuild.dev/sitemap.xml`)
-- [ ] **Bing Webmaster Tools** — submit sitemap; Bing also powers some AI search (Copilot)
-- [ ] **Ahrefs project** — add `docs.solarbuild.dev` with Domain* scope to capture all subdomains
-- [ ] **Add `llms.txt` to `solarbuild.dev`** — once root domain has its own hosting/deployment, add robots.txt and llms.txt there too
+- [x] **Google Search Console** — verified `docs.solarbuild.dev`; sitemap submitted
+- [x] **Google Search Console** — verified `solarbuild.dev` separately
+- [x] **Bing Webmaster Tools** — imported from GSC; sitemap included
+- [x] **Ahrefs project** — created with `docs.solarbuild.dev`
+- [x] **Add `llms.txt` to `solarbuild.dev`** — added to solar-site repo
 - [ ] **`llms-full.txt`** — extended version with code examples and full API signatures (optional, for richer AI context)
-- [ ] **Open Graph meta tags** — add `og:title`, `og:description`, `og:image` to the homepage for social sharing previews
-- [ ] **Structured data (JSON-LD)** — add `SoftwareApplication` schema to homepage for rich search results
+- [x] **Open Graph meta tags** — added to `solarbuild.dev` homepage
+- [x] **Structured data (JSON-LD)** — added `SoftwareApplication` schema to `solarbuild.dev` homepage
