@@ -66,3 +66,21 @@
 - [x] Document `onMount` workaround (post-`mountComponent()` script ordering — added to `building-a-site.mdx`)
 
 > **Sprint estimate:** ~2 days without router, ~1 week with. Fast wins: `innerHTML` prop (30 min) and `onMount` (2 hrs).
+
+---
+
+## SEO & Discovery
+
+### Done
+- [x] `robots.txt` — allow all crawlers including AI agents (GPTBot, ClaudeBot, PerplexityBot, etc.), references sitemap
+- [x] `llms.txt` — AEO file summarizing Solar for LLMs with links to all doc pages and npm packages
+- [x] `sitemap.xml` — all 11 pages with priorities; served at `docs.solarbuild.dev/sitemap.xml`
+
+### To Do
+- [ ] **Google Search Console** — verify ownership of `solarbuild.dev` and `docs.solarbuild.dev`; submit sitemap (`https://docs.solarbuild.dev/sitemap.xml`)
+- [ ] **Bing Webmaster Tools** — submit sitemap; Bing also powers some AI search (Copilot)
+- [ ] **Ahrefs project** — add `docs.solarbuild.dev` with Domain* scope to capture all subdomains
+- [ ] **Add `llms.txt` to `solarbuild.dev`** — once root domain has its own hosting/deployment, add robots.txt and llms.txt there too
+- [ ] **`llms-full.txt`** — extended version with code examples and full API signatures (optional, for richer AI context)
+- [ ] **Open Graph meta tags** — add `og:title`, `og:description`, `og:image` to the homepage for social sharing previews
+- [ ] **Structured data (JSON-LD)** — add `SoftwareApplication` schema to homepage for rich search results
