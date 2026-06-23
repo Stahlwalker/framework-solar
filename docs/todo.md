@@ -85,3 +85,19 @@
 - [ ] **`llms-full.txt`** — extended version with code examples and full API signatures (optional, for richer AI context)
 - [x] **Open Graph meta tags** — added to `solarbuild.dev` homepage
 - [x] **Structured data (JSON-LD)** — added `SoftwareApplication` schema to `solarbuild.dev` homepage
+
+---
+
+## AI-Era Devtools (from blog checklist)
+
+### Documentation
+- [ ] **Document structured errors with recovery steps** — each error code in Solar should have a documented cause and fix, not just a message
+- [ ] **Agent-focused quickstart** — a dedicated guide or section showing how an AI agent would use Solar (discover components via `registry.manifest()`, mount, handle errors)
+
+### Discoverability & Ecosystem
+- [ ] **Submit to AI coding tool directories** — add Solar to Cursor rules directories, `.cursorrules` community lists, and Copilot extension ecosystems
+- [ ] **List in MCP registries** — submit to MCP server/tool registries so agents can find Solar
+- [ ] **MCP server wrapping `registry.manifest()`** — expose Solar's component registry as an MCP tool so agents can introspect available components at runtime (bigger lift, high payoff for Solar's core value prop)
+
+### Content
+- [ ] **Technical blog posts** — write concrete developer content: "Using Solar with Claude", "Building agent UIs with Solar", "How Solar's registry.manifest() works"
