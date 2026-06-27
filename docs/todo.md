@@ -101,3 +101,13 @@
 
 ### Content
 - [ ] **Technical blog posts** — write concrete developer content: "Using Solar with Claude", "Building agent UIs with Solar", "How Solar's registry.manifest() works"
+
+---
+
+## Mintlify improvements
+
+- [x] **`topbarCta`** — add a primary CTA button in the top bar (e.g. "Get Started" linking to installation)
+- [ ] **`og:image`** — set a social card image via `metadata` so link previews on Twitter/Slack show something
+- [x] **`anchors`** — add sidebar icon links for GitHub and npm (more visible than footer socials)
+- [x] **`feedback`** — enable the "Was this page helpful?" widget
+- [ ] **Analytics** — wire PostHog into the `analytics` block in mint.json

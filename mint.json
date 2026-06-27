@@ -25,6 +25,27 @@
       "url": "https://github.com/Stahlwalker/framework-solar"
     }
   ],
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://docs.solarbuild.dev/docs/installation"
+  },
+  "anchors": [
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/Stahlwalker/framework-solar"
+    },
+    {
+      "name": "npm",
+      "icon": "npm",
+      "url": "https://www.npmjs.com/package/solarbuild"
+    }
+  ],
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true,
+    "raiseIssue": true
+  },
   "navigation": [
     {
       "group": "Getting Started",
