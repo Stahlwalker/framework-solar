@@ -1,5 +1,3 @@
-# Installation
-
 Solar is runtime-based — no compiler, no build step required. Scaffold a new project with one command, or drop it into any HTML file via CDN.
 
 ---

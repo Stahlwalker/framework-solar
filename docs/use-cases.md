@@ -1,5 +1,3 @@
-# Solar Use Cases
-
 Solar is designed for apps where an AI agent writes the UI, not a human. The explicit contracts, rigid file structure, and declared side effects make agent output reliably correct — not just probably correct.
 
 ---

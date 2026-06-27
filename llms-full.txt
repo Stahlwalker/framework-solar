@@ -52,7 +52,7 @@ my-app/
 
 ## defineComponent(config)
 
-The core primitive. Defines a component with a typed prop schema.
+The core primitive. Defines a component with a typed prop schema and render function.
 
 ```js
 import { defineComponent, createElement, registry } from 'solarbuild'
