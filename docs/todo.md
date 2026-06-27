@@ -104,6 +104,17 @@
 
 ---
 
+## Docs quality (lessons from React, Vue, Stripe)
+
+- [ ] **Live embed on Introduction** — embed a StackBlitz with a 10-line Counter (defineComponent + useState + mountComponent) so visitors see Solar run without installing anything
+- [ ] **"Pick your path" block on Introduction** — two cards: "I want to build something" → Installation, "I'm an AI agent" → Agent Quickstart
+- [ ] **Rewrite Introduction opener** — lead with outcome: "Solar lets an AI agent generate a working UI component in one call — typed contracts, structured errors, and a machine-readable registry included"
+- [ ] **Prerequisites line on Installation** — add one sentence: "Requires basic JavaScript. No bundler, no build step."
+- [ ] **"Next steps" block at bottom of Installation** — page currently dead-ends; add links to defineComponent API, Agent Quickstart, and Building a Site
+- [ ] **Reorganize sidebar by intent** — consider Getting Started → Build Something (Guides) → Reference (API) instead of burying Guides after API Reference
+
+---
+
 ## Mintlify improvements
 
 - [x] **`topbarCta`** — add a primary CTA button in the top bar (e.g. "Get Started" linking to installation)
