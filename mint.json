@@ -53,10 +53,6 @@
         "docs/errors"
       ]
     },
-    {
-      "group": "More",
-      "pages": ["docs/roadmap"]
-    }
   ],
   "footerSocials": {
     "github": "https://github.com/Stahlwalker/framework-solar",
