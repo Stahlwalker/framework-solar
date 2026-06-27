@@ -75,7 +75,15 @@
     "x": "https://x.com/LukeStahl11",
     "website": "https://lukestahl.io/"
   },
+  "analytics": {
+    "posthog": {
+      "apiKey": "phc_A7qBhuFQRAzULJr7wFZQUXMca2vX4VcRhWJLy2u9hVLX"
+    }
+  },
   "metadata": {
-    "google-site-verification": "F0jF1S7A1b1h79tdEVEq_g7E9W6kr3vPvy58MTK3CxQ"
+    "google-site-verification": "F0jF1S7A1b1h79tdEVEq_g7E9W6kr3vPvy58MTK3CxQ",
+    "og:image": "https://docs.solarbuild.dev/og.png",
+    "twitter:image": "https://docs.solarbuild.dev/og.png",
+    "twitter:card": "summary_large_image"
   }
 }
