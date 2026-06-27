@@ -108,6 +108,6 @@
 
 - [x] **`topbarCta`** — add a primary CTA button in the top bar (e.g. "Get Started" linking to installation)
 - [x] **`og:image`** — set a social card image via `metadata` so link previews on Twitter/Slack show something
-- [x] **`anchors`** — add sidebar icon links for GitHub and npm (more visible than footer socials)
+- [x] **`anchors`** — added then removed; redundant with topbar links on a lean docs site
 - [x] **`feedback`** — enable the "Was this page helpful?" widget
 - [x] **Analytics** — wire PostHog into the `analytics` block in mint.json
