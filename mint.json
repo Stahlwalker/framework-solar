@@ -36,16 +36,17 @@
         "docs/api/define-component",
         "docs/api/hooks",
         "docs/api/h",
-        "docs/api/registry"
+        "docs/api/registry",
+        "docs/errors"
       ]
     },
     {
       "group": "Guides",
-      "pages": ["docs/guides/building-a-site"]
+      "pages": ["docs/guides/agent-quickstart", "docs/guides/building-a-site"]
     },
     {
       "group": "More",
-      "pages": ["docs/design-system", "docs/roadmap"]
+      "pages": ["docs/roadmap"]
     }
   ],
   "footerSocials": {

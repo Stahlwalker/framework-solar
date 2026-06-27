@@ -16,14 +16,15 @@ Solar runs entirely in the browser — install via CDN or npm, define components
 - [Hooks](https://docs.solarbuild.dev/docs/api/hooks): useState, useEffect, useResource (async data), useSubscription, useRoute — all hook-based, no class components
 - [h()](https://docs.solarbuild.dev/docs/api/h): Compact hyperscript notation for building element trees without JSX or a build step
 - [Registry](https://docs.solarbuild.dev/docs/api/registry): Register components globally; call `registry.manifest()` for a full machine-readable schema
+- [Error Reference](https://docs.solarbuild.dev/docs/errors): Every ContractError, hook error, and warning — cause, fix, and code example
 
 ## Guides
 
+- [Agent Quickstart](https://docs.solarbuild.dev/docs/guides/agent-quickstart): How an AI agent discovers components via `registry.manifest()`, mounts them, and handles ContractErrors
 - [Building a Site](https://docs.solarbuild.dev/docs/guides/building-a-site): End-to-end walkthrough — routing, async data fetching, third-party library integration, and GitHub Pages deployment
 
 ## More
 
-- [Design System](https://docs.solarbuild.dev/docs/design-system): CSS conventions, design tokens, and utility classes used in Solar's own components
 - [Roadmap](https://docs.solarbuild.dev/docs/roadmap): Planned features, priorities, and contribution areas
 
 ## npm Packages

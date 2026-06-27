@@ -45,8 +45,18 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://docs.solarbuild.dev/docs/errors</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 
   <!-- Guides -->
+  <url>
+    <loc>https://docs.solarbuild.dev/docs/guides/agent-quickstart</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://docs.solarbuild.dev/docs/guides/building-a-site</loc>
     <changefreq>monthly</changefreq>
@@ -54,11 +64,6 @@
   </url>
 
   <!-- More -->
-  <url>
-    <loc>https://docs.solarbuild.dev/docs/design-system</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
   <url>
     <loc>https://docs.solarbuild.dev/docs/roadmap</loc>
     <changefreq>weekly</changefreq>

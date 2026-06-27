@@ -1,0 +1,283 @@
+---
+title: Error Reference
+description: Every error Solar throws, why it happens, and how to fix it.
+---
+
+Solar errors fall into two categories: **ContractError** (structured, JSON-serializable) and **plain Errors** (hook and setup violations). Both have a `message` property — ContractErrors also expose `component`, `prop`, `expected`, `received`, and `fix`.
+
+---
+
+## ContractError
+
+ContractErrors are thrown when a prop contract is violated or the registry/mount API is misused. They serialize cleanly to JSON, which makes them useful for AI agents — catch them, call `.toJSON()`, and include the result in the agent's context.
+
+```js
+try {
+  mountComponent(Button, { label: 42 }, container)
+} catch (e) {
+  if (e.name === 'ContractError') {
+    console.log(e.toJSON())
+    // { error: 'ContractError', component: 'Button', prop: 'label',
+    //   expected: 'string', received: 'number',
+    //   fix: 'Pass a string value for "label"' }
+  }
+}
+```
+
+### Required prop missing
+
+**Message:** `ComponentName: prop "propName": expected a value (required), got undefined`
+
+**Cause:** A prop marked `required: true` was not passed.
+
+**Fix:** Pass a value for the prop. Check `registry.manifest()` or the component's `defineComponent` call to see which props are required.
+
+```js
+// Wrong
+mountComponent(Button, {}, container)
+
+// Right
+mountComponent(Button, { label: 'Save', onClick: handleSave }, container)
+```
+
+---
+
+### Wrong prop type
+
+**Message:** `ComponentName: prop "propName": expected string, got number`
+
+**Cause:** A prop was passed with the wrong JavaScript type.
+
+**Fix:** Pass the type declared in the component's schema. Use `registry.manifest()` to see the expected type for each prop.
+
+```js
+// Wrong — label expects a string
+mountComponent(Button, { label: 42, onClick: handleSave }, container)
+
+// Right
+mountComponent(Button, { label: 'Save', onClick: handleSave }, container)
+```
+
+---
+
+### Invalid enum value
+
+**Message:** `ComponentName: prop "variant": expected one of ["primary", "secondary"], got "danger"`
+
+**Cause:** A string prop with an `enum` constraint received a value not in the allowed set.
+
+**Fix:** Use one of the values listed in the error. Enum options are also visible in `registry.manifest()` output.
+
+```js
+// Wrong
+mountComponent(Button, { variant: 'danger' }, container)
+
+// Right
+mountComponent(Button, { variant: 'secondary' }, container)
+```
+
+---
+
+### Wrong slot type
+
+**Message:** `ComponentName: prop "icon": expected a vnode (slot), got string`
+
+**Cause:** A prop typed `slot` received a plain value instead of a rendered component vnode.
+
+**Fix:** Pass the output of `h()` or a component render call, not a raw string or number.
+
+```js
+// Wrong
+mountComponent(Card, { icon: 'star' }, container)
+
+// Right
+mountComponent(Card, { icon: h(Icon, { name: 'star' }) }, container)
+```
+
+---
+
+### Wrong slot source
+
+**Message:** `ComponentName: prop "icon": expected slot(Icon), got slot(Badge)`
+
+**Cause:** A slot prop has an `accepts` constraint — only vnodes produced by a specific component are allowed — and the wrong component was passed.
+
+**Fix:** Pass a vnode from the required component.
+
+```js
+// Wrong — slot requires an Icon vnode
+mountComponent(Card, { icon: h(Badge, { text: '3' }) }, container)
+
+// Right
+mountComponent(Card, { icon: h(Icon, { name: 'star' }) }, container)
+```
+
+---
+
+### Array expected
+
+**Message:** `ComponentName: prop "items": expected array, got string`
+
+**Cause:** A prop typed `array` received a non-array value.
+
+**Fix:** Wrap the value in an array, or verify the data source is producing an array.
+
+```js
+// Wrong
+mountComponent(List, { items: 'one,two,three' }, container)
+
+// Right
+mountComponent(List, { items: ['one', 'two', 'three'] }, container)
+```
+
+---
+
+### registry.register() — not a component
+
+**Message:** `Unknown: expected a component created with defineComponent(), got function`
+
+**Cause:** A plain function was passed to `registry.register()` instead of a `defineComponent` result.
+
+**Fix:** Wrap the function with `defineComponent` before registering.
+
+```js
+// Wrong
+registry.register(function Button() { ... })
+
+// Right
+const Button = defineComponent({ name: 'Button', props: { ... }, render() { ... } })
+registry.register(Button)
+```
+
+---
+
+### mountComponent() — not a component
+
+**Message:** `Unknown: expected a component created with defineComponent(), got plain function`
+
+**Cause:** A plain function was passed to `mountComponent()`.
+
+**Fix:** Use the result of `defineComponent()`, not a raw function.
+
+```js
+// Wrong
+mountComponent(function Button() { ... }, props, container)
+
+// Right
+mountComponent(Button, props, container)  // Button from defineComponent()
+```
+
+---
+
+### mountComponent() — not registered
+
+**Message:** `Button: expected component to be registered via registry.register(), got unregistered component`
+
+**Cause:** `mountComponent` was called before the component was added to the registry.
+
+**Fix:** Call `registry.register(Button)` before `mountComponent(Button, ...)`.
+
+```js
+// Wrong — register comes after mount
+mountComponent(Button, props, container)
+registry.register(Button)
+
+// Right
+registry.register(Button)
+mountComponent(Button, props, container)
+```
+
+---
+
+## defineComponent errors
+
+These are thrown during component definition, before any rendering occurs.
+
+### Missing name
+
+**Message:** `defineComponent: "name" is required`
+
+**Cause:** The `name` field was omitted from the `defineComponent` call.
+
+**Fix:** Add a `name` string. Names must be unique across the registry.
+
+```js
+// Wrong
+const Button = defineComponent({ props: { ... }, render() { ... } })
+
+// Right
+const Button = defineComponent({ name: 'Button', props: { ... }, render() { ... } })
+```
+
+---
+
+### Missing render
+
+**Message:** `defineComponent(Button): "render" is required`
+
+**Cause:** The `render` function was omitted.
+
+**Fix:** Add a `render` function that returns a vnode.
+
+```js
+// Wrong
+const Button = defineComponent({ name: 'Button', props: { ... } })
+
+// Right
+const Button = defineComponent({
+  name: 'Button',
+  props: { label: { type: 'string', required: true } },
+  render({ label }) {
+    return h('button', {}, label)
+  }
+})
+```
+
+---
+
+## Hook context errors
+
+Hooks must be called during a component's render function. Calling them outside render throws a plain `Error`.
+
+| Hook | Error message |
+|------|--------------|
+| `useState` | `useState called outside of a component render` |
+| `useMemo` | `useMemo called outside of a component render` |
+| `useResource` | `useResource called outside of a component render` |
+| `useSubscription` | `useSubscription called outside of a component render` |
+| `onMount` | `onMount called outside of a component render` |
+| `onUnmount` | `onUnmount called outside of a component render` |
+| `useRoute` | `useRoute called outside of a component render` |
+
+**Cause:** The hook was called in a setup function, event handler, or async callback — not inside `render`.
+
+**Fix:** Move the hook call into the `render` function body.
+
+```js
+// Wrong — useState called in a setup function
+const count = useState(0)
+const Counter = defineComponent({ name: 'Counter', render() { ... } })
+
+// Right
+const Counter = defineComponent({
+  name: 'Counter',
+  render() {
+    const [count, setCount] = useState(0)
+    return h('button', { onClick: () => setCount(count + 1) }, count)
+  }
+})
+```
+
+---
+
+## Console warnings
+
+These do not throw — they are development-time warnings logged to the console.
+
+### Unknown prop
+
+**Message:** `Button: unknown prop "colour" passed but not declared in schema`
+
+**Cause:** A prop was passed that doesn't appear in the component's `props` schema.
+
+**Fix:** Either remove the extra prop, or add it to the component's schema if it should be supported. This commonly surfaces as a typo (`colour` instead of `color`).

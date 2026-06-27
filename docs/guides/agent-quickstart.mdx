@@ -1,0 +1,158 @@
+---
+title: Agent Quickstart
+description: How an AI agent discovers, mounts, and error-handles Solar components.
+---
+
+Solar is built for AI-generated UIs. This guide shows the minimal pattern an AI agent needs to go from zero to a running component — no guessing at APIs, no trial-and-error on prop types.
+
+---
+
+## 1. Discover what components exist
+
+Call `registry.manifest()` to get a JSON string describing every registered component and its full prop schema. Pass this to your agent as system context before generating any UI code.
+
+```js
+const context = registry.manifest()
+```
+
+Example output:
+
+```json
+[
+  {
+    "name": "Button",
+    "props": {
+      "label": { "type": "string", "required": true },
+      "onClick": { "type": "function", "required": true },
+      "variant": { "type": "string", "enum": ["primary", "secondary"], "default": "primary" }
+    }
+  },
+  {
+    "name": "DataTable",
+    "props": {
+      "rows": { "type": "array", "required": true },
+      "columns": { "type": "array", "required": true },
+      "onRowClick": { "type": "function" }
+    }
+  }
+]
+```
+
+The manifest is the agent's contract. Every prop, type, enum constraint, default, and required flag is declared here. The agent can generate correct code without knowing the component internals.
+
+---
+
+## 2. Mount a component
+
+```js
+import { registry, mountComponent } from 'solarbuild'
+
+const Button = registry.get('Button')
+const container = document.getElementById('app')
+
+mountComponent(Button, {
+  label: 'Approve',
+  onClick: () => console.log('approved'),
+  variant: 'primary',
+}, container)
+```
+
+`mountComponent` returns a numeric instance ID you can use to unmount later.
+
+---
+
+## 3. Handle errors
+
+Solar throws a `ContractError` when props don't match the schema. It's JSON-serializable — catch it and feed it back to the agent as correction context.
+
+```js
+import { ContractError } from 'solarbuild'
+
+function agentMount(componentName, props, container) {
+  const fn = registry.get(componentName)
+  if (!fn) throw new Error(`No component named "${componentName}" in registry`)
+
+  try {
+    return mountComponent(fn, props, container)
+  } catch (e) {
+    if (e instanceof ContractError) {
+      // return structured error — the agent can read this and self-correct
+      return { error: e.toJSON() }
+    }
+    throw e
+  }
+}
+```
+
+`e.toJSON()` returns:
+
+```json
+{
+  "error": "ContractError",
+  "component": "Button",
+  "prop": "label",
+  "expected": "string",
+  "received": "number",
+  "fix": "Pass a string value for \"label\""
+}
+```
+
+Feed this back to the agent with a prompt like: _"Your last mount failed with this error. Use the fix field to correct your props and retry."_
+
+---
+
+## 4. Full agent loop
+
+A minimal generate-mount-correct loop:
+
+```js
+import { registry, mountComponent, ContractError } from 'solarbuild'
+
+async function agentBuildUI(userRequest, container) {
+  const manifest = registry.manifest()
+
+  // Step 1: ask the agent to generate component + props
+  const { componentName, props } = await agent.generate({
+    system: `You are building UI with Solar. Available components:\n${manifest}`,
+    prompt: userRequest,
+  })
+
+  // Step 2: look up the component
+  const fn = registry.get(componentName)
+  if (!fn) {
+    return agent.retry(`No component named "${componentName}". Choose from: ${registry.list().map(c => c.name).join(', ')}`)
+  }
+
+  // Step 3: mount and handle contract errors
+  try {
+    const id = mountComponent(fn, props, container)
+    return { success: true, id }
+  } catch (e) {
+    if (e instanceof ContractError) {
+      return agent.retry(`Mount failed: ${JSON.stringify(e.toJSON())}. Fix the props and try again.`)
+    }
+    throw e
+  }
+}
+```
+
+---
+
+## 5. Unmount when done
+
+```js
+import { unmountComponent } from 'solarbuild'
+
+unmountComponent(id)
+```
+
+This runs all effect cleanups, tears down child instances, and removes the DOM node.
+
+---
+
+## What agents should know
+
+- `registry.manifest()` is the source of truth. Never assume prop names or types — always read the manifest first.
+- `ContractError` has a `fix` field. It tells the agent exactly what to change — use it verbatim in retry prompts.
+- Components must be registered before mounting. If `registry.get(name)` returns `undefined`, the component either doesn't exist or wasn't registered.
+- Event handlers (`type: "function"`) cannot be serialized to JSON. The agent should generate handler function bodies as code strings and have the runtime `eval` or import them — or use a fixed set of named handlers exposed by the host app.

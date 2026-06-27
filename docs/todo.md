@@ -91,8 +91,8 @@
 ## AI-Era Devtools (from blog checklist)
 
 ### Documentation
-- [ ] **Document structured errors with recovery steps** — each error code in Solar should have a documented cause and fix, not just a message
-- [ ] **Agent-focused quickstart** — a dedicated guide or section showing how an AI agent would use Solar (discover components via `registry.manifest()`, mount, handle errors)
+- [x] **Document structured errors with recovery steps** — each error code in Solar should have a documented cause and fix, not just a message
+- [x] **Agent-focused quickstart** — a dedicated guide or section showing how an AI agent would use Solar (discover components via `registry.manifest()`, mount, handle errors)
 
 ### Discoverability & Ecosystem
 - [ ] **Submit to AI coding tool directories** — add Solar to Cursor rules directories, `.cursorrules` community lists, and Copilot extension ecosystems

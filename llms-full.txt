@@ -157,6 +157,41 @@ When a prop contract is violated, Solar throws a `ContractError` immediately —
 
 Use `e.toJSON()` for the structured object. Use `e.message` for the human-readable string.
 
+### All ContractError scenarios
+
+| Scenario | `expected` | `fix` |
+|----------|-----------|-------|
+| Required prop missing | `"a value (required)"` | Provide a value for the required prop |
+| Wrong type | e.g. `"string"` | Pass the correct type |
+| Invalid enum value | `"one of [\"primary\", \"secondary\"]"` | Use one of the allowed values |
+| Slot prop got a non-object | `"a vnode (slot)"` | Pass a rendered component vnode via `h()` |
+| Slot prop from wrong component | `"slot(Icon)"` | Pass a vnode produced by the required component |
+| Array expected | `"array"` | Pass an array |
+| `registry.register()` called with plain function | `"a component created with defineComponent()"` | Wrap with `defineComponent()` before registering |
+| `mountComponent()` called with plain function | `"a component created with defineComponent()"` | Wrap with `defineComponent()` before mounting |
+| `mountComponent()` called before `registry.register()` | `"component to be registered via registry.register()"` | Call `registry.register(Fn)` before mounting |
+
+### Plain hook errors (not ContractError)
+
+These throw a standard `Error` when a hook is called outside a component render:
+
+- `useState called outside of a component render`
+- `useMemo called outside of a component render`
+- `useResource called outside of a component render`
+- `useSubscription called outside of a component render`
+- `onMount called outside of a component render`
+- `onUnmount called outside of a component render`
+- `useRoute called outside of a component render`
+
+### defineComponent errors
+
+- `defineComponent: "name" is required` — `name` field was omitted
+- `defineComponent(Button): "render" is required` — `render` function was omitted
+
+### Console warnings (non-throwing)
+
+- `Button: unknown prop "colour" passed but not declared in schema` — prop not in schema, often a typo
+
 ---
 
 ## mountComponent(component, props, el, depth?, options?)
@@ -486,6 +521,46 @@ import { mountPortal } from 'solarbuild'
 
 mountPortal(Modal, { title: 'Confirm', onClose: () => {} }, document.body)
 ```
+
+---
+
+## Agent usage pattern
+
+### 1. Discover components
+
+```js
+const manifest = registry.manifest()
+// pass to your agent as system context — it describes every component and prop schema
+```
+
+### 2. Mount with error handling
+
+```js
+import { registry, mountComponent, ContractError } from 'solarbuild'
+
+function agentMount(componentName, props, container) {
+  const fn = registry.get(componentName)
+  if (!fn) throw new Error(`No component named "${componentName}". Available: ${registry.list().map(c => c.name).join(', ')}`)
+
+  try {
+    return { id: mountComponent(fn, props, container) }
+  } catch (e) {
+    if (e instanceof ContractError) return { error: e.toJSON() }
+    throw e
+  }
+}
+```
+
+### 3. Self-correction loop
+
+When a mount returns `{ error }`, feed `error.fix` back to the agent with a retry prompt. The `fix` field is a human-readable correction the agent can act on directly.
+
+### Notes for agents
+
+- Always call `registry.manifest()` before generating props — never assume prop names or types.
+- `function` props cannot be serialized to JSON. Use a fixed set of named handlers exposed by the host app, or have the agent generate handler code as a string for the runtime to evaluate.
+- Components must be registered before mounting. If `registry.get(name)` returns `undefined`, the component is not registered.
+- `unmountComponent(id)` tears down hooks, child instances, and removes the DOM node.
 
 ---
 
