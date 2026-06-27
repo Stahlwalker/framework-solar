@@ -40,6 +40,10 @@
       "pages": ["docs/introduction", "docs/installation", "docs/use-cases"]
     },
     {
+      "group": "Guides",
+      "pages": ["docs/guides/agent-quickstart", "docs/guides/building-a-site"]
+    },
+    {
       "group": "API Reference",
       "pages": [
         "docs/api/define-component",
@@ -48,10 +52,6 @@
         "docs/api/registry",
         "docs/errors"
       ]
-    },
-    {
-      "group": "Guides",
-      "pages": ["docs/guides/agent-quickstart", "docs/guides/building-a-site"]
     },
     {
       "group": "More",

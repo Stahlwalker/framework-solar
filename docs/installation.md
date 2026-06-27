@@ -1,5 +1,7 @@
 Solar is runtime-based — no compiler, no build step required. Scaffold a new project with one command, or drop it into any HTML file via CDN.
 
+**Prerequisites:** basic JavaScript. No bundler, no build tooling needed.
+
 ---
 
 ## Scaffold a new project (recommended)
@@ -158,3 +160,11 @@ mountComponent(Button, {
   variant: 'primary',
 }, document.getElementById('app'))
 ```
+
+---
+
+## What's next
+
+- [defineComponent](/docs/api/define-component) — learn the full component API
+- [Agent Quickstart](/docs/guides/agent-quickstart) — how an AI agent discovers and mounts Solar components
+- [Building a Site](/docs/guides/building-a-site) — routing, async data, and deployment end to end
