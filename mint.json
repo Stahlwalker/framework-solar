@@ -25,11 +25,7 @@
       "url": "https://github.com/Stahlwalker/framework-solar"
     }
   ],
-  "topbarCtaButton": {
-    "name": "Get Started",
-    "url": "https://docs.solarbuild.dev/docs/installation"
-  },
-"feedback": {
+  "feedback": {
     "thumbsRating": true,
     "suggestEdit": true,
     "raiseIssue": true
