@@ -32,14 +32,9 @@ A typed Button component: one valid mount, one caught `ContractError`. The `fix`
     textDecoration: 'none',
   }}
 >
-  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-    <svg width="22" height="22" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12.747 16.273H4L16.728 1.5l-1.475 10.227H24L11.272 26.5l1.475-10.227Z" fill="#1374ef"/>
-    </svg>
-    <div>
-      <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Open live demo on StackBlitz</div>
-      <div style={{ color: '#6b6573', fontSize: '0.75rem', marginTop: '0.2rem' }}>No install. Runs in your browser.</div>
-    </div>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+    <img src="/logo/stackblitz-logo-white_blue.svg" alt="StackBlitz" style={{ height: '18px', width: 'auto' }} />
+    <span style={{ color: '#6b6573', fontSize: '0.75rem' }}>Open live demo. No install.</span>
   </div>
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6573" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M7 17L17 7M17 7H7M17 7v10"/>
