@@ -14,13 +14,11 @@ Solar makes contracts explicit, structure rigid, and side effects declared so ag
 
 ## Live demo
 
-The Button below has a typed schema. The first mount passes valid props. The second mount passes `label: 42`, a number where a string is required. Solar catches it before render and returns a structured `ContractError`. The `fix` field (green) is what an agent would read to self-correct.
+A typed Button component: one valid mount, one caught `ContractError`. The `fix` field tells the agent exactly what to change.
 
-<iframe
-  src="https://stackblitz.com/github/Stahlwalker/framework-solar/tree/main/stackblitz?embed=1&hideNavigation=1&theme=dark&view=preview"
-  style={{ width: '100%', height: '380px', border: 'none', borderRadius: '8px' }}
-  title="Solar ContractError demo"
-/>
+<Card title="Open live demo" icon="arrow-up-right-from-square" href="https://stackblitz.com/github/Stahlwalker/framework-solar/tree/main/stackblitz" target="_blank">
+  Runs in StackBlitz. No install.
+</Card>
 
 ## Pick your path
 
