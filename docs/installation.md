@@ -1,3 +1,9 @@
+---
+sidebarTitle: "Installation"
+title: "Install via CDN, npm, or Project Scaffold"
+description: "Install Solar via CDN for instant setup, npm for bundler projects, or scaffold a full app in one command. No compiler or build step required — runs in any browser."
+---
+
 Solar is runtime-based. No compiler or build step required. Scaffold a new project with one command, or drop it into any HTML file via CDN.
 
 **Prerequisites:** basic JavaScript. No bundler, no build tooling needed.

@@ -1,3 +1,9 @@
+---
+sidebarTitle: "Use Cases"
+title: "Use Cases: When an AI Writes Your UI"
+description: "Solar fits AI-generated internal tools, no-code builders, vibe-coded apps, and agent-driven UIs — anywhere a model writes components instead of a human."
+---
+
 Solar is designed for apps where an AI agent writes the UI, not a human. The explicit contracts, rigid file structure, and declared side effects make agent output reliably correct.
 
 ---
