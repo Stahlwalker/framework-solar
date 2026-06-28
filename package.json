@@ -1,7 +1,21 @@
 {
   "name": "solarbuild",
-  "version": "0.2.0",
-  "description": "A runtime-based JavaScript UI framework designed around a constraint most frameworks ignore: a lot of the code targeting it won't be written by a human.",
+  "version": "0.2.1",
+  "description": "A runtime UI framework built for AI-generated code. Typed prop contracts, structured errors with fix instructions, and a machine-readable component registry.",
+  "keywords": [
+    "ui-framework",
+    "javascript",
+    "ai",
+    "agent",
+    "llm",
+    "components",
+    "runtime",
+    "no-build",
+    "typed",
+    "contracts",
+    "browser",
+    "registry"
+  ],
   "type": "module",
   "license": "MIT",
   "homepage": "https://docs.solarbuild.dev",
