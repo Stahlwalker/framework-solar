@@ -4,7 +4,7 @@ import {
   registry,
   createElement,
   ContractError,
-} from 'https://cdn.jsdelivr.net/npm/solarbuild/framework/index.js'
+} from 'solarbuild'
 
 // ── Component definition ──────────────────────────────────────────────────────
 

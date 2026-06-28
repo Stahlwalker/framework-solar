@@ -1,0 +1,14 @@
+{
+  "name": "solar-contracterror-demo",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "solarbuild": "latest"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
