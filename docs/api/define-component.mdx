@@ -1,4 +1,4 @@
-The core primitive in Solar. Every component is defined through a schema that declares its shape explicitly — props are typed and validated at runtime before the component renders.
+The core primitive in Solar. Every component is defined through a schema that declares its shape explicitly. Props are typed and validated at runtime before the component renders.
 
 ```js
 import { defineComponent, createElement, registry } from 'solarbuild'
@@ -43,14 +43,14 @@ Each entry in `props` accepts the following fields:
 | `required` | boolean | Throws if the prop is missing or null |
 | `default` | any | Value used when the prop is not passed |
 | `enum` | array | Restricts the value to a list of allowed strings |
-| `accepts` | string | For `slot` type only — restricts to a specific component name |
+| `accepts` | string | Only applies to `slot` type. Restricts to a specific component name. |
 
 ## Prop types
 
 ```js
 import { Types } from 'solarbuild'
 
-// Types is a convenience object — the string values work directly too
+// Types is a convenience object; the string values work directly too
 Types.string    // 'string'
 Types.number    // 'number'
 Types.boolean   // 'boolean'
@@ -63,7 +63,7 @@ Types.slot      // 'slot'
 
 ## Contract errors
 
-If a prop contract is violated, Solar throws a structured `ContractError` immediately — before the component renders:
+If a prop contract is violated, Solar throws a structured `ContractError` before the component renders:
 
 ```json
 {
@@ -109,4 +109,4 @@ Passing a plain `createElement` vnode instead of a `Button` vnode throws a `Cont
 Button({ label: 'Save', onClick: handleSave, variant: 'primary' })
 ```
 
-The returned vnode has a `_source` property set to the component name — used by the slot system for type checking.
+The returned vnode has a `_source` property set to the component name. The slot system uses it for type checking.

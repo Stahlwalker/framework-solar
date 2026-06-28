@@ -4,7 +4,7 @@
 
 A runtime-based JavaScript framework designed around a constraint most frameworks ignore: a lot of the code targeting it won't be written by a human.
 
-Existing frameworks — React, Vue, Svelte — were designed assuming a developer writes, reads, and maintains every file. AI-generated code has different properties. It's often correct in isolation but inconsistent across files. It doesn't respect conventions it can't see. It gets regenerated frequently rather than incrementally maintained.
+Existing frameworks (React, Vue, Svelte) were designed assuming a developer writes, reads, and maintains every file. AI-generated code has different properties. It's often correct in isolation but inconsistent across files. It doesn't respect conventions it can't see. It gets regenerated frequently rather than incrementally maintained.
 
 This framework solves for that by making contracts explicit, structure rigid, and side effects declared. The goal is AI output that's predictably correct, not just probably correct.
 
@@ -12,11 +12,11 @@ This framework solves for that by making contracts explicit, structure rigid, an
 
 ## Core principles
 
-- **Explicit contracts over conventions** — props are typed and validated at the component boundary, not inferred
-- **Declared side effects** — effects state what they depend on and what they touch; no implicit subscriptions
-- **Rigid file structure** — a model generating a new component knows exactly where everything goes
-- **Runtime-based** — no compiler required; builds incrementally and is debuggable in the browser
-- **Small surface area** — fewer primitives means a model has fewer ways to generate something wrong
+- **Explicit contracts over conventions:** props are typed and validated at the component boundary, not inferred
+- **Declared side effects:** effects state what they depend on and what they touch; no implicit subscriptions
+- **Rigid file structure:** a model generating a new component knows exactly where everything goes
+- **Runtime-based:** no compiler required; builds incrementally and is debuggable in the browser
+- **Small surface area:** fewer primitives means a model has fewer ways to generate something wrong
 
 ---
 
@@ -83,7 +83,7 @@ Three cases to handle:
 2. Text node changed → update `textContent`
 3. Same type → update changed props, recurse into children
 
-Children diffing is the hard part. Start with index-based comparison. Add key-based matching once the basic case works — that's where React's `key` prop comes from.
+Children diffing is the hard part. Start with index-based comparison. Add key-based matching once the basic case works. That's where React's `key` prop comes from.
 
 ```js
 function diff(parent, oldVnode, newVnode, index = 0) {
@@ -113,7 +113,7 @@ function diff(parent, oldVnode, newVnode, index = 0) {
 
 State that persists between renders without reinitializing.
 
-React's approach: a hook index (cursor) that increments each time a hook is called, keyed to the current component. This is why hooks can't be called conditionally — the index would shift between renders and you'd read the wrong state slot.
+React's approach: a hook index (cursor) that increments each time a hook is called, keyed to the current component. This is why hooks can't be called conditionally. The index would shift between renders and you'd read the wrong state slot.
 
 ```js
 let currentComponent = null
@@ -220,7 +220,7 @@ function scheduleRerender(component) {
 }
 ```
 
-`queueMicrotask` runs after the current synchronous block but before the next paint — same timing model React uses for its batch updates.
+`queueMicrotask` runs after the current synchronous block but before the next paint. Same timing model React uses for its batch updates.
 
 **Goal:** multiple state updates in a single event handler produce one render.
 
@@ -265,7 +265,7 @@ Rules a model can follow without inference:
 
 - Not a meta-framework. No SSR, no file-based routing, no build pipeline.
 - Not a React replacement. Narrower scope, different constraints.
-- Not optimized for humans writing components by hand — though it works for that too.
+- Not optimized for humans writing components by hand, though it works fine for that too.
 
 The thesis: the next wave of frameworks won't be designed for developers. They'll be designed for the models developers use to write code. This is an early attempt at that.
 
@@ -274,5 +274,5 @@ The thesis: the next wave of frameworks won't be designed for developers. They'l
 ## Open questions
 
 - Should the prop schema be a runtime object or a TypeScript interface? (TypeScript is better DX for humans; plain objects are more reliable targets for models)
-- How does the contract model handle component composition — does a parent need to know the schema of its children?
+- How does the contract model handle component composition? Does a parent need to know the schema of its children?
 - Is there a case for a lightweight dev server that reads the schema and surfaces validation errors before runtime?

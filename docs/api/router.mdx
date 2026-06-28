@@ -4,7 +4,7 @@ title: "Router"
 
 # Router
 
-A hash-based router for multi-page Solar apps. Routes map URL fragments (`#/about`) to components. No server configuration needed — works with any static host.
+A hash-based router for multi-page Solar apps. Routes map URL fragments (`#/about`) to components. No server configuration needed. Works with any static host.
 
 ```js
 import { createRouter } from 'solarbuild'
@@ -31,8 +31,8 @@ Creates a router. `routes` is a plain object mapping route patterns to Solar com
 |---|---|
 | `'/'` | `#/` or no hash |
 | `'/about'` | `#/about` |
-| `'/post/:id'` | `#/post/123` — captures `{ id: '123' }` |
-| `'*'` | anything unmatched — use as a 404 fallback |
+| `'/post/:id'` | `#/post/123`. Captures `{ id: '123' }` |
+| `'*'` | Anything unmatched. Use as a 404 fallback. |
 
 Patterns are matched in definition order. Put `'*'` last.
 
@@ -50,7 +50,7 @@ router.navigate('/about')
 
 ## navigate(path)
 
-Top-level navigate function — same as `router.navigate()`, available anywhere without holding a router reference.
+A top-level navigate function. Same as `router.navigate()`, but available anywhere without holding a router reference.
 
 ```js
 import { navigate } from 'solarbuild'
@@ -88,7 +88,7 @@ const PostPage = defineComponent({
 
 ## Route components
 
-Route components are regular Solar components. They don't need to be pre-registered — the router auto-registers them on first render. Props passed to the component are the captured route params.
+Route components are regular Solar components. They don't need to be pre-registered. The router auto-registers them on first render. Props passed to the component are the captured route params.
 
 ```js
 const PostPage = defineComponent({

@@ -6,16 +6,16 @@ Four improvements informed by the AI-first UI framework landscape research. Each
 
 ## Priority order
 
-1. **Structured errors** — everything else builds on this
-2. **Component registry** — needed before compact serialization
-3. **Slots / composition** — extends the contract model
-4. **Compact serialization** — optimization, depends on registry
+1. **Structured errors:** everything else builds on this
+2. **Component registry:** needed before compact serialization
+3. **Slots / composition:** extends the contract model
+4. **Compact serialization:** optimization, depends on registry
 
 ---
 
 ## 1. Structured error objects
 
-**Problem:** Solar throws plain strings. An agent consuming a validation error can't parse it programmatically — it has to regex a human-readable message.
+**Problem:** Solar throws plain strings. An agent consuming a validation error can't parse it programmatically. It has to regex a human-readable message.
 
 **What we're building:** A `ContractError` class that extends `Error` with structured fields an agent can act on directly.
 
@@ -41,9 +41,9 @@ throw new ContractError({
 
 **Files:**
 - New: `framework/contract/ContractError.js`
-- Modify: `framework/contract/types.js` — replace all `throw new Error(...)` with `ContractError`
+- Modify: `framework/contract/types.js`: replace all `throw new Error(...)` with `ContractError`
 
-**Inspired by:** SpecifyUI's exception-handling loop (arXiv:2509.07334) — invalid LLM output triggers a structured error that goes back to the model for correction.
+**Inspired by:** SpecifyUI's exception-handling loop (arXiv:2509.07334). Invalid LLM output triggers a structured error that goes back to the model for correction.
 
 ---
 
@@ -51,7 +51,7 @@ throw new ContractError({
 
 **Problem:** Solar validates props once a component is called, but there's no way for a model to know what components exist before generating code. Unknown components fail silently or at mount time with a generic error.
 
-**What we're building:** A module-level registry. Components self-register on import. The registry exposes a machine-readable manifest — a model reads it before generating any composition code.
+**What we're building:** A module-level registry. Components self-register on import. The registry exposes a machine-readable manifest. A model reads it before generating any composition code.
 
 ```js
 // components self-register
@@ -78,11 +78,11 @@ Mounting an unregistered component throws a `ContractError` with a fix instructi
 
 **Files:**
 - New: `framework/registry.js`
-- Modify: `framework/runtime/reconciler.js` — guard against unregistered components
-- Modify: `components/Button.js`, `components/Counter.js` — self-register on import
-- Modify: `framework/index.js` — export `registry`
+- Modify: `framework/runtime/reconciler.js`: guard against unregistered components
+- Modify: `components/Button.js`, `components/Counter.js`: self-register on import
+- Modify: `framework/index.js`: export `registry`
 
-**Inspired by:** Google A2UI's component catalog — agents can only request components from a pre-approved list.
+**Inspired by:** Google A2UI's component catalog. Agents can only request components from a pre-approved list.
 
 ---
 
@@ -106,18 +106,18 @@ const Card = defineComponent({
   }
 })
 
-// valid — Button produces a vnode tagged _source: 'Button'
+// valid - Button produces a vnode tagged _source: 'Button'
 Card({ action: Button({ label: 'Save', onClick: () => {} }) })
 
-// invalid — throws ContractError
+// invalid - throws ContractError
 Card({ action: createElement('button', {}, 'Save') })
 // ContractError: Card: expected "action" to be slot(Button), got no _source tag
 // Fix: Pass a vnode produced by the Button component
 ```
 
 **Files:**
-- Modify: `framework/contract/types.js` — add `slot` to `Types`, add slot validation logic
-- Modify: `framework/contract/defineComponent.js` — tag returned vnode with `_source`
+- Modify: `framework/contract/types.js`: add `slot` to `Types`, add slot validation logic
+- Modify: `framework/contract/defineComponent.js`: tag returned vnode with `_source`
 
 **Solves:** The open question from FRAMEWORK.md that none of the surveyed systems (A2UI, GenUI, OpenUI) have answered cleanly.
 
@@ -127,7 +127,7 @@ Card({ action: createElement('button', {}, 'Save') })
 
 **Problem:** `createElement` calls are verbose. A model generating a tree writes a lot of tokens per node. OpenUI benchmarked ~52% token reduction with a compact format.
 
-**What we're building:** An `h()` function that parses a compact array notation. Registry-aware — component names resolve to their registered function automatically.
+**What we're building:** An `h()` function that parses a compact array notation. It's registry-aware, so component names resolve to their registered function automatically.
 
 ```js
 // instead of:
@@ -141,11 +141,11 @@ h(['div', { class: 'row' },
 ])
 ```
 
-`h()` is a pure vnode factory — no lifecycle, no state. Stateful components still go through `mountComponent`. The compact format is just a denser input for building vnode trees.
+`h()` is a pure vnode factory. No lifecycle, no state. Stateful components still go through `mountComponent`. The compact format is just a denser input for building vnode trees.
 
 **Files:**
 - New: `framework/h.js`
-- Modify: `framework/index.js` — export `h`
+- Modify: `framework/index.js`: export `h`
 
 **Inspired by:** OpenUI's compact streaming-first language (github.com/thesysdev/openui).
 
@@ -172,5 +172,5 @@ h(['div', { class: 'row' },
 ## Open questions (not in this iteration)
 
 - Should `registry.manifest()` be the primary interface for model context, or should there be a more structured schema format (JSON Schema, OpenAPI-style)?
-- Should slot `accepts` support multiple component names — `accepts: ['Button', 'IconButton']`?
+- Should slot `accepts` support multiple component names, e.g. `accepts: ['Button', 'IconButton']`?
 - Is there a case for a lightweight dev server that reads the registry at startup and surfaces the manifest before any code runs?

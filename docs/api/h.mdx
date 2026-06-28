@@ -1,5 +1,5 @@
 ---
-title: "h() — Compact Notation"
+title: "h(): Compact Notation"
 ---
 
 
@@ -30,9 +30,9 @@ h([type, props?, ...children])
 ```
 
 Each node is an array where:
-- `type` — a tag name string (`'div'`) or a registered component name (`'Button'`)
-- `props` — optional object of attributes or props
-- `children` — remaining items, each a nested array or a primitive
+- `type`: a tag name string (`'div'`) or a registered component name (`'Button'`)
+- `props`: optional object of attributes or props
+- `children`: remaining items, each a nested array or a primitive
 
 Primitives (strings, numbers) pass through unchanged.
 
@@ -47,7 +47,7 @@ h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
 // equivalent to: Button({ label: 'Save', onClick: handleSave, variant: 'primary' })
 ```
 
-Prop validation still runs — a wrong prop type throws a `ContractError`.
+Prop validation still runs. A wrong prop type throws a `ContractError`.
 
 
 ## Nested trees
@@ -65,7 +65,7 @@ h(['div', { class: 'layout' },
 
 ## Children on registered components
 
-When `h()` calls a registered component and there are child nodes, they're passed as a `children` prop — not spread as arguments. Declare `children` in the schema to receive them:
+When `h()` calls a registered component and there are child nodes, they're passed as a `children` prop, not spread as arguments. Declare `children` in the schema to receive them:
 
 ```js
 const List = defineComponent({
@@ -85,9 +85,9 @@ h(['List', {},
 // children → [vnode, vnode] passed as a prop
 ```
 
-If you omit `children` from the schema, Solar emits a dev warning but does not throw — the prop is silently dropped from the resolved props object.
+If you omit `children` from the schema, Solar emits a dev warning but does not throw. The prop is silently dropped from the resolved props object.
 
-For plain DOM elements (`div`, `ul`, etc.), children are passed as normal arguments to `createElement` — no prop involved.
+For plain DOM elements (`div`, `ul`, etc.), children are passed as normal arguments to `createElement`. No prop involved.
 
 ---
 
@@ -95,7 +95,7 @@ For plain DOM elements (`div`, `ul`, etc.), children are passed as normal argume
 
 ### style
 
-Pass `style` as an object of camelCased CSS properties — this is the preferred form, as it merges cleanly on re-renders:
+Pass `style` as an object of camelCased CSS properties. This form merges cleanly on re-renders:
 
 ```js
 h(['div', { style: { backgroundColor: '#09080a', padding: '2rem' } }])
@@ -119,12 +119,12 @@ Set raw HTML on a DOM node by passing an `innerHTML` prop. Children are ignored 
 h(['div', { class: 'highlight', innerHTML: '<span class="token keyword">const</span> x = 1' }])
 ```
 
-Use this when you need to inject pre-rendered or syntax-highlighted HTML — for example, output from Prism.js or a markdown renderer. Only use it with trusted content.
+Use this for pre-rendered or syntax-highlighted HTML, like output from Prism.js or a markdown renderer. Only use it with trusted content.
 
 ---
 
 ## When to use h() vs createElement
 
-`h()` is more compact and closer to markup in structure. `createElement` is more explicit and easier to trace in a debugger. Both produce identical vnodes — mix them freely.
+`h()` is more compact and closer to markup in structure. `createElement` is more explicit and easier to trace in a debugger. Both produce identical vnodes, so mix them freely.
 
 `h()` is particularly well-suited as a generation target: the array format is easy for a model to produce without needing to know function call syntax.

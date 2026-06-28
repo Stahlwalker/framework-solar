@@ -1,16 +1,16 @@
-Solar lets an AI agent generate a working UI component in one call — typed contracts, structured errors, and a machine-readable registry included.
+Solar is a runtime UI framework built for AI-generated code. Typed contracts, structured errors, and a machine-readable component registry are built in.
 
-Existing frameworks — React, Vue, Svelte — were built assuming a developer writes, reads, and maintains every file. AI-generated code has different properties: it's often correct in isolation but inconsistent across files, gets regenerated frequently, and doesn't respect conventions it can't see.
+Existing frameworks (React, Vue, Svelte) were built assuming a developer writes, reads, and maintains every file. AI-generated code works differently. It's often correct in isolation but inconsistent across files. It gets regenerated frequently instead of incrementally maintained. It doesn't respect conventions it can't see.
 
-Solar solves for that by making contracts explicit, structure rigid, and side effects declared. The goal is AI output that's predictably correct — not just probably correct.
+Solar makes contracts explicit, structure rigid, and side effects declared so agent output is predictably correct.
 
 ## Core principles
 
-- **Explicit contracts** — props are typed and validated at the component boundary, not inferred
-- **Declared side effects** — effects state what they depend on and what they touch
-- **Rigid file structure** — a model generating a new component knows exactly where everything goes
-- **Runtime-based** — no compiler required; debuggable in the browser as-is
-- **Small surface area** — fewer primitives means fewer ways to generate something wrong
+- **Explicit contracts:** props are typed and validated at the component boundary, not inferred
+- **Declared side effects:** effects declare what they depend on and what they touch
+- **Rigid file structure:** a model generating a new component knows exactly where everything goes
+- **Runtime-based:** no compiler required; debuggable in the browser as-is
+- **Small surface area:** fewer primitives means fewer ways to generate something wrong
 
 ## Pick your path
 

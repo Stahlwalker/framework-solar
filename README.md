@@ -2,21 +2,21 @@
 
 A runtime-based JavaScript UI framework designed around a constraint most frameworks ignore: a lot of the code targeting it won't be written by a human.
 
-Existing frameworks — React, Vue, Svelte — were designed assuming a developer writes, reads, and maintains every file. AI-generated code has different properties. It's often correct in isolation but inconsistent across files. It doesn't respect conventions it can't see. It gets regenerated frequently rather than incrementally maintained.
+Existing frameworks (React, Vue, Svelte) were designed assuming a developer writes, reads, and maintains every file. AI-generated code works differently. It's often correct in isolation but inconsistent across files. It doesn't respect conventions it can't see. It gets regenerated frequently rather than incrementally maintained.
 
-Solar solves for that by making contracts explicit, structure rigid, and side effects declared. The goal is AI output that's predictably correct, not just probably correct.
+Solar makes contracts explicit, structure rigid, and side effects declared so agent output is predictably correct.
 
 ---
 
 ## Core principles
 
-- **Explicit contracts over conventions** — props are typed and validated at the component boundary, not inferred
-- **Component registry** — models read a machine-readable manifest before generating any composition code
-- **Structured errors** — validation failures return parseable JSON an agent can act on directly
-- **Declared side effects** — effects state what they depend on and what they touch; no implicit subscriptions
-- **Typed composition** — slot props enforce which component can fill them, with runtime validation
-- **Runtime-based** — no compiler required; debuggable in the browser as-is
-- **Small surface area** — fewer primitives means fewer ways to generate something wrong
+- **Explicit contracts over conventions:** props are typed and validated at the component boundary, not inferred
+- **Component registry:** models read a machine-readable manifest before generating any composition code
+- **Structured errors:** validation failures return parseable JSON an agent can act on directly
+- **Declared side effects:** effects declare what they depend on and what they touch; no implicit subscriptions
+- **Typed composition:** slot props enforce which component can fill them, with runtime validation
+- **Runtime-based:** no compiler required; debuggable in the browser as-is
+- **Small surface area:** fewer primitives means fewer ways to generate something wrong
 
 ---
 
@@ -46,7 +46,7 @@ registry.register(Button)
 
 ### Structured errors
 
-Pass the wrong type and you get a structured error — not just a string. An agent can parse and self-correct without regex.
+Pass the wrong type and you get a structured error, not a string. An agent can parse and self-correct without regex.
 
 ```js
 Button({ label: 42, onClick: () => {} })
@@ -109,7 +109,7 @@ Card({ title: 'Hello', action: createElement('button', {}, 'Go') })
 
 ### Compact h() notation
 
-`h()` parses a dense array format into a vnode tree. Registry-aware — component names resolve automatically.
+`h()` parses a dense array format into a vnode tree. It's registry-aware, so component names resolve automatically.
 
 ```js
 import { h } from './framework/index.js'
@@ -120,7 +120,7 @@ h(['div', { class: 'row' },
   ['button', { class: 'btn' }, 'Click'],
 ])
 
-// registered component by name — dispatches to Button()
+// registered component by name, dispatches to Button()
 h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
 ```
 
@@ -128,9 +128,9 @@ h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
 
 State is `useState`. Side effects use three explicit primitives instead of a general `useEffect`:
 
-- **`useResource`** — async data fetching with automatic AbortController cancellation on key change
-- **`useSubscription`** — event listener that attaches and detaches when source/event/handler changes
-- **`onMount` / `onUnmount`** — lifecycle callbacks that run once, not on every render
+- **`useResource`:** async data fetching with automatic AbortController cancellation on key change
+- **`useSubscription`:** event listener that attaches and detaches when source/event/handler changes
+- **`onMount` / `onUnmount`:** lifecycle callbacks that run once, not on every render
 
 ```js
 const UserCard = defineComponent({
@@ -155,7 +155,7 @@ const UserCard = defineComponent({
     onUnmount(() => analytics.track('UserCard unmounted'))
 
     if (loading) return createElement('p', {}, 'Loading...')
-    return createElement('p', {}, `${data.name} — viewport: ${width}px`)
+    return createElement('p', {}, `${data.name} - viewport: ${width}px`)
   }
 })
 ```
@@ -197,7 +197,7 @@ cd my-app
 npm run dev
 ```
 
-Or use the CDN directly — no install, no build step:
+Or use the CDN directly. No install, no build step:
 
 ```html
 <!DOCTYPE html>
@@ -232,7 +232,7 @@ Or use the CDN directly — no install, no build step:
 npm run dev
 ```
 
-Open `http://localhost:3456/demo/` (trailing slash required — static server quirk).
+Open `http://localhost:3456/demo/` (trailing slash required; it's a static server quirk).
 
 The demo covers all framework features: static rendering, diffing, hooks, contract validation, declared effects, batched updates, registry manifest, compact h() notation, and typed slots.
 
@@ -252,6 +252,6 @@ Full documentation at [docs.solarbuild.dev](https://docs.solarbuild.dev)
 
 - Not a meta-framework. No SSR, no routing, no build pipeline.
 - Not a React replacement. Narrower scope, different constraints.
-- Not optimized for humans writing components by hand — though it works for that too.
+- Not optimized for humans writing components by hand, though it works fine for that too.
 
 The thesis: the next wave of frameworks won't be designed for developers. They'll be designed for the models developers use to write code. This is an early attempt at that.

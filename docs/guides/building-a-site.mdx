@@ -4,7 +4,7 @@ title: "Building a Site"
 
 # Building a Homepage
 
-Solar works well for marketing pages and content-heavy UIs. This guide walks through building a real homepage — hero, feature grid, CTA — using `h()` as the primary authoring format, which is more compact than `createElement` for markup-heavy sections.
+Solar works well for marketing pages and content-heavy UIs. This guide walks through building a real homepage (hero, feature grid, CTA) using `h()` as the primary authoring format, which is more compact than `createElement` for markup-heavy sections.
 
 ---
 
@@ -151,7 +151,7 @@ import { defineComponent, registry, h } from '../solar/index.js'
 import './FeatureCard.js'
 
 const FEATURES = [
-  { title: 'Explicit contracts',   description: 'Props are typed and validated at runtime — no guessing.' },
+  { title: 'Explicit contracts',   description: 'Props are typed and validated at runtime - no guessing.' },
   { title: 'Component registry',   description: 'A machine-readable manifest of every component in your app.' },
   { title: 'Structured errors',    description: 'Validation failures return parseable JSON an agent can act on.' },
   { title: 'Declared side effects', description: 'Effects state what they depend on. No implicit subscriptions.' },
@@ -178,7 +178,7 @@ registry.register(FeatureGrid)
 export default FeatureGrid
 ```
 
-Note: `h()` dispatches `['FeatureCard', { ... }]` to the registered component automatically — no import needed at the call site as long as `FeatureCard.js` has been imported somewhere.
+Note: `h()` dispatches `['FeatureCard', { ... }]` to the registered component automatically. No import needed at the call site, as long as `FeatureCard.js` has been imported somewhere.
 
 ---
 
@@ -200,7 +200,7 @@ mountComponent(Nav, {
 
 mountComponent(Hero, {
   headline: 'The UI framework built for AI-generated code',
-  subhead:  'Explicit contracts, a component registry, and structured errors — so AI output is predictably correct.',
+  subhead:  'Explicit contracts, a component registry, and structured errors - so AI output is predictably correct.',
   cta:      'Get started',
   ctaHref:  'https://docs.solarbuild.dev/docs/installation',
 }, document.getElementById('hero'))
@@ -220,7 +220,7 @@ mountComponent(FeatureGrid, {}, document.getElementById('features'))
 
 ## Styling
 
-Solar doesn't ship CSS — bring your own. The design system tokens from Solar's own template are a good starting point:
+Solar doesn't ship CSS. Bring your own. The design system tokens from Solar's own template are a good starting point:
 
 ```css
 :root {
@@ -254,7 +254,7 @@ Since `mountComponent()` is synchronous and ES modules execute in document order
 <!-- 2. your Solar app -->
 <script type="module" src="./main.js"></script>
 
-<!-- 3. post-mount work — runs after main.js completes -->
+<!-- 3. post-mount work - runs after main.js completes -->
 <script type="module">
   if (window.Prism) Prism.highlightAll()
 </script>
@@ -285,4 +285,4 @@ rm -rf my-site
 
 Then in your repo settings, set Pages source to the root branch.
 
-**Any static host:** upload the folder — there's nothing to build.
+**Any static host:** upload the folder. There's nothing to build.

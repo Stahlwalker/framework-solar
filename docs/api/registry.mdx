@@ -46,7 +46,7 @@ if (registry.has('Button')) {
 
 ## registry.list()
 
-Returns an array of all registered components with their prop schemas — structured for programmatic use.
+Returns an array of all registered components with their prop schemas, structured for programmatic use.
 
 ```js
 registry.list()
@@ -67,7 +67,7 @@ registry.list()
 
 ## registry.manifest()
 
-Returns `registry.list()` serialized as a JSON string. Designed to be passed to an AI agent as context — the agent can read the manifest and know exactly what components exist and how to call them.
+Returns `registry.list()` serialized as a JSON string. Pass it to an AI agent as context so it knows exactly what components exist and how to call them.
 
 ```js
 const context = registry.manifest()
@@ -89,4 +89,4 @@ Example output:
 ]
 ```
 
-This is one of Solar's core differentiators — a machine-readable schema for every component in the app, available at runtime with a single call.
+A machine-readable schema for every component in the app, available at runtime with a single call.

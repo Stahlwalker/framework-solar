@@ -3,7 +3,7 @@ title: Agent Quickstart
 description: How an AI agent discovers, mounts, and error-handles Solar components.
 ---
 
-Solar is built for AI-generated UIs. This guide shows the minimal pattern an AI agent needs to go from zero to a running component — no guessing at APIs, no trial-and-error on prop types.
+Solar is built for AI-generated UIs. This guide shows the minimal pattern an agent needs: discover what components exist, mount one, and handle validation errors without guessing at APIs or prop types.
 
 ---
 
@@ -63,7 +63,7 @@ mountComponent(Button, {
 
 ## 3. Handle errors
 
-Solar throws a `ContractError` when props don't match the schema. It's JSON-serializable — catch it and feed it back to the agent as correction context.
+Solar throws a `ContractError` when props don't match the schema. It's JSON-serializable, so you can catch it and feed it directly back to the agent as correction context.
 
 ```js
 import { ContractError } from 'solarbuild'
@@ -76,7 +76,7 @@ function agentMount(componentName, props, container) {
     return mountComponent(fn, props, container)
   } catch (e) {
     if (e instanceof ContractError) {
-      // return structured error — the agent can read this and self-correct
+      // return structured error - the agent can read this and self-correct
       return { error: e.toJSON() }
     }
     throw e
@@ -152,7 +152,7 @@ This runs all effect cleanups, tears down child instances, and removes the DOM n
 
 ## What agents should know
 
-- `registry.manifest()` is the source of truth. Never assume prop names or types — always read the manifest first.
-- `ContractError` has a `fix` field. It tells the agent exactly what to change — use it verbatim in retry prompts.
+- `registry.manifest()` is the source of truth. Never assume prop names or types. Always read the manifest first.
+- `ContractError` has a `fix` field. It tells the agent exactly what to change. Use it verbatim in retry prompts.
 - Components must be registered before mounting. If `registry.get(name)` returns `undefined`, the component either doesn't exist or wasn't registered.
-- Event handlers (`type: "function"`) cannot be serialized to JSON. The agent should generate handler function bodies as code strings and have the runtime `eval` or import them — or use a fixed set of named handlers exposed by the host app.
+- Event handlers (`type: "function"`) can't be serialized to JSON. The agent should generate handler function bodies as code strings for the runtime to `eval` or import, or expose a fixed set of named handlers from the host app.

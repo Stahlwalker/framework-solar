@@ -2,26 +2,26 @@
 
 > A runtime-based JavaScript UI framework designed for AI-generated code. No build step. Explicit prop contracts, structured errors, and a machine-readable component registry.
 
-Solar runs entirely in the browser — install via CDN or npm, define components with typed prop schemas, and mount them to any DOM node. It is specifically designed with AI code generation in mind: every component declares what props it accepts, errors surface as structured objects (not thrown exceptions), and the global registry exposes a `manifest()` method that returns a machine-readable schema of every registered component.
+Solar runs entirely in the browser. Install via CDN or npm, define components with typed prop schemas, and mount them to any DOM node. It's designed for AI code generation: every component declares what props it accepts, errors surface as structured objects (not thrown exceptions), and the global registry exposes a `manifest()` method that returns a machine-readable schema of every registered component.
 
 ## Getting Started
 
 - [Introduction](https://docs.solarbuild.dev/docs/introduction): What Solar is, the design constraints it solves, and how it differs from React/Vue
 - [Installation](https://docs.solarbuild.dev/docs/installation): CDN one-liner and npm setup; no bundler required
-- [Use Cases](https://docs.solarbuild.dev/docs/use-cases): When Solar is the right tool — AI-assisted UIs, embeddable widgets, no-build environments
+- [Use Cases](https://docs.solarbuild.dev/docs/use-cases): When Solar is the right tool. AI-assisted UIs, embeddable widgets, no-build environments.
 
 ## API Reference
 
-- [defineComponent](https://docs.solarbuild.dev/docs/api/define-component): Core API — declare a component with a prop schema, render function, and lifecycle hooks
-- [Hooks](https://docs.solarbuild.dev/docs/api/hooks): useState, useEffect, useResource (async data), useSubscription, useRoute — all hook-based, no class components
+- [defineComponent](https://docs.solarbuild.dev/docs/api/define-component): Core API. Declare a component with a prop schema, render function, and lifecycle hooks.
+- [Hooks](https://docs.solarbuild.dev/docs/api/hooks): useState, useResource (async data), useSubscription, useRoute. All hook-based, no class components.
 - [h()](https://docs.solarbuild.dev/docs/api/h): Compact hyperscript notation for building element trees without JSX or a build step
 - [Registry](https://docs.solarbuild.dev/docs/api/registry): Register components globally; call `registry.manifest()` for a full machine-readable schema
-- [Error Reference](https://docs.solarbuild.dev/docs/errors): Every ContractError, hook error, and warning — cause, fix, and code example
+- [Error Reference](https://docs.solarbuild.dev/docs/errors): Every ContractError, hook error, and warning. Includes cause, fix, and code example.
 
 ## Guides
 
 - [Agent Quickstart](https://docs.solarbuild.dev/docs/guides/agent-quickstart): How an AI agent discovers components via `registry.manifest()`, mounts them, and handles ContractErrors
-- [Building a Site](https://docs.solarbuild.dev/docs/guides/building-a-site): End-to-end walkthrough — routing, async data fetching, third-party library integration, and GitHub Pages deployment
+- [Building a Site](https://docs.solarbuild.dev/docs/guides/building-a-site): End-to-end walkthrough covering routing, async data fetching, third-party library integration, and GitHub Pages deployment.
 
 ## More
 
@@ -29,8 +29,8 @@ Solar runs entirely in the browser — install via CDN or npm, define components
 
 ## npm Packages
 
-- [solarbuild](https://www.npmjs.com/package/solarbuild): The core framework — `npm install solarbuild`
-- [create-solarbuild](https://www.npmjs.com/package/create-solarbuild): Project scaffolder — `npm create solarbuild@latest my-app`
+- [solarbuild](https://www.npmjs.com/package/solarbuild): The core framework. `npm install solarbuild`
+- [create-solarbuild](https://www.npmjs.com/package/create-solarbuild): Project scaffolder. `npm create solarbuild@latest my-app`
 
 ## Source
 

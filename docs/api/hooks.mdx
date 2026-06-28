@@ -1,4 +1,4 @@
-Solar's hooks manage state, async data, subscriptions, and lifecycle. All hooks must be called inside a component's `render` function — never conditionally, never outside a component.
+Solar's hooks manage state, async data, subscriptions, and lifecycle. All hooks must be called inside a component's `render` function. Never conditionally, never outside a component.
 
 
 ---
@@ -18,7 +18,7 @@ setCount(c => c + 1)
 ```
 
 <ParamField path="initial" type="any">
-  The initial state value. Can also be a function — it runs once on the first render and its return value is used as the initial state (lazy initialization).
+  The initial state value. Can also be a function. It runs once on the first render and its return value is used as the initial state (lazy initialization).
 </ParamField>
 
 **Returns:** `[value, setter]`
@@ -43,7 +43,7 @@ const sorted = useMemo(
 </ParamField>
 
 <ParamField path="deps" type="array | object" required>
-  Values that determine when to recompute. Can be an array or a plain object — compared by value, not reference.
+  Values that determine when to recompute. Can be an array or a plain object. Compared by value, not reference.
 </ParamField>
 
 **Returns:** the cached computed value.
@@ -111,7 +111,7 @@ Works with DOM `EventTarget`s (`.addEventListener`) and Node-style emitters (`.o
 </ParamField>
 
 <ParamField path="handler" type="function" required>
-  The event handler. Solar compares this by reference — if you need a stable handler, define it outside the render function or memoize it with `useMemo`.
+  The event handler. Solar compares this by reference. For a stable handler, define it outside the render function or memoize it with `useMemo`.
 </ParamField>
 
 ---
@@ -141,7 +141,7 @@ mountComponent(App, {}, document.getElementById('app'), 0, {
 })
 ```
 
-Both forms run via `queueMicrotask` — after the current render cycle, once the DOM is ready.
+Both forms run via `queueMicrotask`, after the current render cycle, once the DOM is ready.
 
 ---
 

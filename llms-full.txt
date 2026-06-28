@@ -1,8 +1,8 @@
-# Solar — Full API Reference
+# Solar: Full API Reference
 
 > A runtime-based JavaScript UI framework designed for AI-generated code. No build step. Explicit prop contracts, structured errors, and a machine-readable component registry.
 
-Solar runs entirely in the browser via CDN or npm. Every component declares a typed prop schema. Violations throw structured `ContractError` objects before the component renders. The global registry exposes `manifest()` — a JSON string of every registered component and its schema, designed to be passed directly to an AI agent as context.
+Solar runs entirely in the browser via CDN or npm. Every component declares a typed prop schema. Violations throw structured `ContractError` objects before the component renders. The global registry exposes `manifest()`, a JSON string of every registered component and its schema. Pass it directly to an AI agent as context.
 
 ---
 
@@ -89,7 +89,7 @@ export default Button
 | `required` | boolean | Throws if missing or null |
 | `default`  | any     | Value used when prop is not passed |
 | `enum`     | array   | Restricts value to a list of allowed strings |
-| `accepts`  | string  | For `slot` type only — restricts to a specific component name |
+| `accepts`  | string  | For `slot` type only. Restricts to a specific component name. |
 
 ### Types helper
 
@@ -141,7 +141,7 @@ Card({ title: 'Hello', action: createElement('button', {}, 'Go') })
 
 ## ContractError
 
-When a prop contract is violated, Solar throws a `ContractError` immediately — before the component renders.
+When a prop contract is violated, Solar throws a `ContractError` before the component renders.
 
 ```json
 {
@@ -185,12 +185,12 @@ These throw a standard `Error` when a hook is called outside a component render:
 
 ### defineComponent errors
 
-- `defineComponent: "name" is required` — `name` field was omitted
-- `defineComponent(Button): "render" is required` — `render` function was omitted
+- `defineComponent: "name" is required`: `name` field was omitted
+- `defineComponent(Button): "render" is required`: `render` function was omitted
 
 ### Console warnings (non-throwing)
 
-- `Button: unknown prop "colour" passed but not declared in schema` — prop not in schema, often a typo
+- `Button: unknown prop "colour" passed but not declared in schema`: prop not in schema, often a typo
 
 ---
 
@@ -225,7 +225,7 @@ mountComponent(App, {}, document.getElementById('app'), 0, {
 
 ## Hooks
 
-All hooks must be called inside a component's `render` function — never conditionally, never outside a component.
+All hooks must be called inside a component's `render` function. Never conditionally, never outside a component.
 
 ### useState(initial)
 
@@ -238,7 +238,7 @@ setCount(c => c + 1)         // set from previous value (preferred for derived u
 
 Setter skips re-render if the new value is strictly equal to the previous.
 
-Lazy initialization — pass a function to compute the initial value once:
+Lazy initialization: pass a function to compute the initial value once:
 
 ```js
 const [data, setData] = useState(() => JSON.parse(localStorage.getItem('cache')))
@@ -259,7 +259,7 @@ const sorted = useMemo(
 )
 ```
 
-`deps` can be an array or plain object — compared by value, not reference.
+`deps` can be an array or plain object. Compared by value, not reference.
 
 **Returns:** the cached value.
 
@@ -289,7 +289,7 @@ return createElement('p', {}, data.name)
 | `loading` | boolean | True while a fetch is in flight |
 | `error`   | Error\|null | Set if the fetch threw, null otherwise |
 
-Previous data remains available during a key transition — `data` is not cleared to null.
+Previous data remains available during a key transition. `data` is not cleared to null.
 
 ---
 
@@ -353,11 +353,11 @@ const PostPage = defineComponent({
 })
 ```
 
-**Returns:** `{ path, params }` — `path` is the current hash path (e.g. `'/post/42'`), `params` is an object of captured `:param` values.
+**Returns:** `{ path, params }`. `path` is the current hash path (e.g. `'/post/42'`). `params` is an object of captured `:param` values.
 
 ---
 
-## h(node) — Compact notation
+## h(node): Compact notation
 
 Array-based alternative to `createElement`. Easier to generate programmatically.
 
@@ -372,13 +372,13 @@ h(['div', { class: 'card' },
 
 Each node: `[type, props?, ...children]`
 
-- `type` — tag name string (`'div'`) or registered component name (`'Button'`)
-- `props` — optional object of attributes or props
-- `children` — nested arrays or primitives
+- `type`: tag name string (`'div'`) or registered component name (`'Button'`)
+- `props`: optional object of attributes or props
+- `children`: nested arrays or primitives
 
 ### Registry dispatch
 
-If `type` matches a registered component name, `h()` calls that component — prop validation still runs:
+If `type` matches a registered component name, `h()` calls that component. Prop validation still runs:
 
 ```js
 h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
@@ -387,14 +387,14 @@ h(['Button', { label: 'Save', onClick: handleSave, variant: 'primary' }])
 
 ### Special props
 
-**style** — object (preferred) or string:
+**style:** object (preferred) or string:
 
 ```js
 h(['div', { style: { backgroundColor: '#09080a', padding: '2rem' } }])
 h(['div', { style: 'background: #09080a' }])
 ```
 
-**innerHTML** — set raw HTML; children are ignored when present:
+**innerHTML:** set raw HTML; children are ignored when present:
 
 ```js
 h(['div', { innerHTML: '<span class="keyword">const</span> x = 1' }])
@@ -441,7 +441,7 @@ registry.list()
 
 ### registry.manifest()
 
-Returns `registry.list()` serialized as a JSON string. Pass this to an AI agent as context — the agent can read it and know exactly what components exist and how to call them:
+Returns `registry.list()` serialized as a JSON string. Pass it to an AI agent as context so it knows exactly what components exist and how to call them:
 
 ```js
 const context = registry.manifest()
@@ -467,7 +467,7 @@ Example output:
 
 ## Router
 
-Hash-based router. No server config needed — works on any static host.
+Hash-based router. No server config needed. Works on any static host.
 
 ```js
 import { createRouter } from 'solarbuild'
@@ -514,7 +514,7 @@ const PostPage = defineComponent({
 
 ## mountPortal(component, props, targetEl)
 
-Renders a component into any DOM node — useful for modals, toasts, overlays:
+Renders a component into any DOM node. Useful for modals, toasts, overlays:
 
 ```js
 import { mountPortal } from 'solarbuild'
@@ -557,7 +557,7 @@ When a mount returns `{ error }`, feed `error.fix` back to the agent with a retr
 
 ### Notes for agents
 
-- Always call `registry.manifest()` before generating props — never assume prop names or types.
+- Always call `registry.manifest()` before generating props. Never assume prop names or types.
 - `function` props cannot be serialized to JSON. Use a fixed set of named handlers exposed by the host app, or have the agent generate handler code as a string for the runtime to evaluate.
 - Components must be registered before mounting. If `registry.get(name)` returns `undefined`, the component is not registered.
 - `unmountComponent(id)` tears down hooks, child instances, and removes the DOM node.

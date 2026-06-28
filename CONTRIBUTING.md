@@ -20,8 +20,8 @@ This enables a pre-commit hook that warns if you change `docs/api/` or `framewor
 ## Pull requests
 
 1. Fork the repo and create a branch from `main`
-2. Keep changes focused — one concern per PR
-3. Don't add a compiler, SSR, routing, or build pipeline — Solar is intentionally runtime-only
+2. Keep changes focused. One concern per PR.
+3. Don't add a compiler, SSR, routing, or build pipeline. Solar is intentionally runtime-only.
 4. Run the demo locally to verify nothing regressed (`npm run dev`, open `http://localhost:3456/demo/`)
 5. Open the PR with a clear description of what changed and why
 
@@ -29,7 +29,7 @@ This enables a pre-commit hook that warns if you change `docs/api/` or `framewor
 
 Solar's surface area is intentionally small. Before adding a new primitive, ask: can an AI-code-generation target reliably use this without ambiguity? If not, it probably doesn't belong here.
 
-Hooks must follow the same object-form pattern as the existing ones — explicit `deps`, no magic. Components must be definable via `defineComponent` with a fully declarable prop schema.
+Hooks must follow the same object-form pattern as the existing ones: explicit `deps`, no magic. Components must be definable via `defineComponent` with a fully declarable prop schema.
 
 ## Commit style
 

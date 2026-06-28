@@ -3,13 +3,13 @@ title: Error Reference
 description: Every error Solar throws, why it happens, and how to fix it.
 ---
 
-Solar errors fall into two categories: **ContractError** (structured, JSON-serializable) and **plain Errors** (hook and setup violations). Both have a `message` property — ContractErrors also expose `component`, `prop`, `expected`, `received`, and `fix`.
+Solar errors fall into two categories: **ContractError** (structured, JSON-serializable) and **plain Errors** (hook and setup violations). Both have a `message` property. ContractErrors also expose `component`, `prop`, `expected`, `received`, and `fix`.
 
 ---
 
 ## ContractError
 
-ContractErrors are thrown when a prop contract is violated or the registry/mount API is misused. They serialize cleanly to JSON, which makes them useful for AI agents — catch them, call `.toJSON()`, and include the result in the agent's context.
+ContractErrors are thrown when a prop contract is violated or the registry/mount API is misused. They serialize cleanly to JSON. Catch them, call `.toJSON()`, and include the result in the agent's context.
 
 ```js
 try {
@@ -51,7 +51,7 @@ mountComponent(Button, { label: 'Save', onClick: handleSave }, container)
 **Fix:** Pass the type declared in the component's schema. Use `registry.manifest()` to see the expected type for each prop.
 
 ```js
-// Wrong — label expects a string
+// Wrong: label expects a string
 mountComponent(Button, { label: 42, onClick: handleSave }, container)
 
 // Right
@@ -91,7 +91,7 @@ mountComponent(Button, { variant: 'secondary' }, container)
 mountComponent(Card, { icon: 'star' }, container)
 
 // Right
-mountComponent(Card, { icon: h(Icon, { name: 'star' }) }, container)
+mountComponent(Card, { icon: h(['Icon', { name: 'star' }]) }, container)
 ```
 
 ---
@@ -100,16 +100,16 @@ mountComponent(Card, { icon: h(Icon, { name: 'star' }) }, container)
 
 **Message:** `ComponentName: prop "icon": expected slot(Icon), got slot(Badge)`
 
-**Cause:** A slot prop has an `accepts` constraint — only vnodes produced by a specific component are allowed — and the wrong component was passed.
+**Cause:** A slot prop has an `accepts` constraint that restricts which component can fill it, and the wrong component was passed.
 
 **Fix:** Pass a vnode from the required component.
 
 ```js
-// Wrong — slot requires an Icon vnode
-mountComponent(Card, { icon: h(Badge, { text: '3' }) }, container)
+// Wrong: slot requires an Icon vnode
+mountComponent(Card, { icon: h(['Badge', { text: '3' }]) }, container)
 
 // Right
-mountComponent(Card, { icon: h(Icon, { name: 'star' }) }, container)
+mountComponent(Card, { icon: h(['Icon', { name: 'star' }]) }, container)
 ```
 
 ---
@@ -132,7 +132,7 @@ mountComponent(List, { items: ['one', 'two', 'three'] }, container)
 
 ---
 
-### registry.register() — not a component
+### registry.register(): not a component
 
 **Message:** `Unknown: expected a component created with defineComponent(), got function`
 
@@ -151,7 +151,7 @@ registry.register(Button)
 
 ---
 
-### mountComponent() — not a component
+### mountComponent(): not a component
 
 **Message:** `Unknown: expected a component created with defineComponent(), got plain function`
 
@@ -169,7 +169,7 @@ mountComponent(Button, props, container)  // Button from defineComponent()
 
 ---
 
-### mountComponent() — not registered
+### mountComponent(): not registered
 
 **Message:** `Button: expected component to be registered via registry.register(), got unregistered component`
 
@@ -178,7 +178,7 @@ mountComponent(Button, props, container)  // Button from defineComponent()
 **Fix:** Call `registry.register(Button)` before `mountComponent(Button, ...)`.
 
 ```js
-// Wrong — register comes after mount
+// Wrong: register comes after mount
 mountComponent(Button, props, container)
 registry.register(Button)
 
@@ -249,12 +249,12 @@ Hooks must be called during a component's render function. Calling them outside 
 | `onUnmount` | `onUnmount called outside of a component render` |
 | `useRoute` | `useRoute called outside of a component render` |
 
-**Cause:** The hook was called in a setup function, event handler, or async callback — not inside `render`.
+**Cause:** The hook was called in a setup function, event handler, or async callback, not inside `render`.
 
 **Fix:** Move the hook call into the `render` function body.
 
 ```js
-// Wrong — useState called in a setup function
+// Wrong: useState called in a setup function
 const count = useState(0)
 const Counter = defineComponent({ name: 'Counter', render() { ... } })
 
@@ -263,7 +263,7 @@ const Counter = defineComponent({
   name: 'Counter',
   render() {
     const [count, setCount] = useState(0)
-    return h('button', { onClick: () => setCount(count + 1) }, count)
+    return h(['button', { onclick: () => setCount(count + 1) }, count])
   }
 })
 ```
@@ -272,7 +272,7 @@ const Counter = defineComponent({
 
 ## Console warnings
 
-These do not throw — they are development-time warnings logged to the console.
+These do not throw. They're development-time warnings logged to the console.
 
 ### Unknown prop
 

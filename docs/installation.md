@@ -1,4 +1,4 @@
-Solar is runtime-based — no compiler, no build step required. Scaffold a new project with one command, or drop it into any HTML file via CDN.
+Solar is runtime-based. No compiler or build step required. Scaffold a new project with one command, or drop it into any HTML file via CDN.
 
 **Prerequisites:** basic JavaScript. No bundler, no build tooling needed.
 
@@ -29,7 +29,7 @@ cd my-app
 npm run dev
 ```
 
-Open `http://localhost:3000` — your app is running.
+Open `http://localhost:3000`. Your app is running.
 
 ---
 
@@ -46,7 +46,7 @@ The fastest way to get running. Import Solar directly from a CDN in any HTML fil
   <body>
     <div id="app"></div>
     <script type="module">
-      import { defineComponent, mountComponent, useState, createElement } from 'https://cdn.jsdelivr.net/npm/solarbuild/framework/index.js'
+      import { defineComponent, mountComponent, registry, useState, createElement } from 'https://cdn.jsdelivr.net/npm/solarbuild/framework/index.js'
 
       const App = defineComponent({
         name: 'App',
@@ -60,6 +60,7 @@ The fastest way to get running. Import Solar directly from a CDN in any HTML fil
         },
       })
 
+      registry.register(App)
       mountComponent(App, {}, document.getElementById('app'))
     </script>
   </body>
@@ -165,6 +166,6 @@ mountComponent(Button, {
 
 ## What's next
 
-- [defineComponent](/docs/api/define-component) — learn the full component API
-- [Agent Quickstart](/docs/guides/agent-quickstart) — how an AI agent discovers and mounts Solar components
-- [Building a Site](/docs/guides/building-a-site) — routing, async data, and deployment end to end
+- [defineComponent](/docs/api/define-component): the full component API
+- [Agent Quickstart](/docs/guides/agent-quickstart): how an AI agent discovers and mounts Solar components
+- [Building a Site](/docs/guides/building-a-site): routing, async data, and deployment end to end

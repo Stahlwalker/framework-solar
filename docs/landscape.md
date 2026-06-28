@@ -17,9 +17,9 @@ That's the same thesis as Solar. The differences are scope, approach, and how st
 ## Commercial / open source
 
 ### Google A2UI
-**Released:** December 2025 — **Status:** Open source, v0.9 by mid-2026
+**Released:** December 2025 | **Status:** Open source, v0.9 by mid-2026
 
-The most complete commercial framework explicitly designed for LLM-generated UI. Represents UI as a flat adjacency list of components using ID references — a declarative data format, not executable code — so LLMs can generate UI incrementally as structured output.
+The most complete commercial framework explicitly designed for LLM-generated UI. Represents UI as a flat adjacency list of components using ID references (a declarative data format, not executable code) so LLMs can generate UI incrementally as structured output.
 
 Key mechanic: the client application maintains a catalog of pre-approved UI components, and agents can only request components from that catalog. This prevents arbitrary LLM code execution at the architecture level.
 
@@ -31,13 +31,13 @@ Already adopted by CopilotKit, Flutter GenUI SDK, and AG-UI.
 ---
 
 ### OpenUI (thesysdev)
-**Status:** Active 2026 — open source
+**Status:** Active 2026 (open source)
 
 Full-stack generative UI framework built around three machine-readability primitives:
 
 1. A compact streaming-first language ~52% more token-efficient than equivalent JSON
-2. Zod schema enforcement on component props at definition time — typed contracts baked into `defineComponent()`
-3. Hard restriction of LLM output to a pre-registered component library — the model cannot generate arbitrary UI
+2. Zod schema enforcement on component props at definition time: typed contracts baked into `defineComponent()`
+3. Hard restriction of LLM output to a pre-registered component library. The model cannot generate arbitrary UI.
 
 Very close in architecture to Solar. The Zod schema approach is the equivalent of Solar's `props` schema object.
 
@@ -48,7 +48,7 @@ Very close in architecture to Solar. The Zod schema approach is the equivalent o
 ### Storybook MCP Server
 **Status:** Active 2026
 
-Takes a different approach — layers contract enforcement on top of an existing component system rather than baking it into the framework.
+Takes a different approach: it layers contract enforcement on top of an existing component system rather than baking it into the framework.
 
 Self-healing agentic loop: AI agent generates UI using documented components → writes Storybook stories with interaction tests → runs tests including accessibility checks → fixes issues → re-validates. No human in the loop. Known stability issues with the MCP proxy layer.
 
@@ -61,7 +61,7 @@ Self-healing agentic loop: AI agent generates UI using documented components →
 ### SpecifyUI
 **Paper:** arXiv:2509.07334, September 2025
 
-Introduces SPEC — a formal intermediate representation encoded as lightweight JSON with parameterized (numerical/enumerated) and semantic (short phrases/tags) fields. LLMs both extract and generate SPEC.
+Introduces SPEC, a formal intermediate representation encoded as lightweight JSON with parameterized (numerical/enumerated) and semantic (short phrases/tags) fields. LLMs both extract and generate SPEC.
 
 Contract enforcement mechanism: invalid LLM-generated edits trigger an exception-handling loop that returns the error context to the model for correction, capped at 3 retries. Essentially a self-healing contract at generation time.
 
@@ -88,7 +88,7 @@ Limitation: restricted to HTML/JS frontends, no backend logic.
 ### BISCUIT (Apple ML Research)
 **Paper:** arXiv:2404.07387, IEEE VL/HCC 2024
 
-Earlier multi-agent pipeline. A UI Planner agent outputs JSON specs before any code is generated — separating intent representation from implementation. One of the first papers to make this separation explicit as an architectural principle.
+Earlier multi-agent pipeline. A UI Planner agent outputs JSON specs before any code is generated, separating intent representation from implementation. One of the first papers to make this separation explicit as an architectural principle.
 
 - https://arxiv.org/abs/2404.07387
 
@@ -107,12 +107,12 @@ Not a UI framework specifically, but directly relevant to the contract enforceme
 
 ## Human preference benchmark context
 
-Studies measuring LLM-generated UI quality put current models at ELO ~1736 vs ~1800 for human-designed interfaces — close but not at parity. Structured-representation approaches (GenUI, SpecifyUI) dramatically outperform plain conversational generation on the same tasks.
+Studies measuring LLM-generated UI quality put current models at ELO ~1736 vs ~1800 for human-designed interfaces, close but not at parity. Structured-representation approaches (GenUI, SpecifyUI) dramatically outperform plain conversational generation on the same tasks.
 
 ---
 
 ## Where Solar fits
 
-Most of these are either commercial products with broader scope (A2UI, OpenUI) or academic pipelines restricted to specific output formats (GenUI → HTML only). Solar is a clean, from-scratch runtime implementation of the core idea — no dependencies, no build step, no compiler, just the primitives. That makes it a useful base for experimenting with the architecture without the constraints of a production system.
+Most of these are either commercial products with broader scope (A2UI, OpenUI) or academic pipelines restricted to specific output formats (GenUI → HTML only). Solar is a clean, from-scratch runtime implementation of the core idea: no dependencies, no build step, no compiler, just the primitives. That makes it a useful base for experimenting with the architecture without the constraints of a production system.
 
 The open questions from the FRAMEWORK.md spec (TypeScript interfaces vs. plain objects, component composition across schema boundaries, a lightweight dev server that surfaces validation errors) are not answered by any of these systems. That's the gap.
