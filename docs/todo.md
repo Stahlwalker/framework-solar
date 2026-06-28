@@ -106,7 +106,7 @@
 
 ## Docs quality (lessons from React, Vue, Stripe)
 
-- [ ] **Live embed on Introduction:** embed a StackBlitz with a 10-line Counter (defineComponent + useState + mountComponent) so visitors see Solar run without installing anything
+- [x] **Live demo on Introduction:** StackBlitz link (not embed — Mintlify lacks COOP/COEP headers required by WebContainer). Demo shows the 3-step agent loop: discover via `registry.manifest()`, catch `ContractError` on bad mount, self-correct with `fix` field.
 - [x] **"Pick your path" block on Introduction:** two cards: "I want to build something" → Installation, "I'm an AI agent" → Agent Quickstart
 - [x] **Rewrite Introduction opener:** lead with outcome: "Solar lets an AI agent generate a working UI component in one call. Typed contracts, structured errors, and a machine-readable registry included."
 - [x] **Prerequisites line on Installation:** add one sentence: "Requires basic JavaScript. No bundler, no build step."
