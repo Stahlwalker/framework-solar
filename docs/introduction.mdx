@@ -1,8 +1,8 @@
-Solar is a runtime UI framework built for AI-generated code. Typed contracts, structured errors, and a machine-readable component registry are built in.
+Solar is a runtime UI framework built for AI-generated code.
 
-Existing frameworks (React, Vue, Svelte) were built assuming a developer writes, reads, and maintains every file. AI-generated code works differently. It's often correct in isolation but inconsistent across files. It gets regenerated frequently instead of incrementally maintained. It doesn't respect conventions it can't see.
+When an AI agent builds UI with React or Vue, it guesses. It guesses prop names, types, and valid values. When it gets something wrong, it gets a stack trace. Stack traces are not machine-readable feedback.
 
-Solar makes contracts explicit, structure rigid, and side effects declared so agent output is predictably correct.
+Solar gives agents a clear path. Call `registry.manifest()` and you get a JSON schema of every registered component, including what props it takes and what values are valid. Mount a component with wrong props and you get a `ContractError`, a structured object with `expected`, `received`, and `fix` fields. The agent reads `fix` and retries. No human required.
 
 ## Core principles
 

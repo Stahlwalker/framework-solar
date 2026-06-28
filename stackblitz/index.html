@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Solar: Live Demo</title>
+  <title>Solar: Agent Loop Demo</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0 }
 
@@ -12,27 +12,121 @@
       background: #09080a;
       color: #e8e6ea;
       min-height: 100vh;
-      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
     }
 
     .demo {
-      max-width: 520px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: 540px;
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      gap: 0.75rem;
     }
 
-    .label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
+    .steps {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .step-pill {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #2e2a34;
+      background: #141218;
+      cursor: pointer;
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #6b6573;
-      margin-bottom: 0.75rem;
+      transition: all 0.15s;
+      font-family: inherit;
     }
 
-    /* Button */
+    .step-pill.active {
+      background: #1e1b22;
+      border-color: #f59e0b;
+      color: #f59e0b;
+    }
+
+    .progress-track {
+      height: 2px;
+      background: #2e2a34;
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #f59e0b;
+      border-radius: 1px;
+      width: 0%;
+    }
+
+    .progress-fill.running {
+      transition: width 4s linear;
+      width: 100%;
+    }
+
+    .panel {
+      background: #141218;
+      border: 1px solid #2e2a34;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 0.4rem 1rem;
+      background: #1a1720;
+      border-bottom: 1px solid #2e2a34;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6b6573;
+    }
+
+    .panel-body {
+      padding: 1rem;
+      min-height: 72px;
+    }
+
+    pre {
+      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+      font-size: 0.75rem;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      color: #9d98a8;
+    }
+
+    .comment { color: #4a4555 }
+    .kw      { color: #c084fc }
+    .fn      { color: #f59e0b }
+    .str     { color: #86efac }
+    .num     { color: #fb923c }
+    .bool    { color: #60a5fa }
+    .key     { color: #c084fc }
+    .fix-val { color: #86efac; font-weight: 600 }
+    .err-val { color: #fca5a5 }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+    .badge--error   { background: #450a0a; color: #fca5a5 }
+    .badge--success { background: #052e16; color: #86efac }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -42,66 +136,27 @@
       font-weight: 500;
       cursor: pointer;
       border: none;
+      font-family: inherit;
       transition: opacity 0.15s;
     }
     .btn:hover { opacity: 0.85 }
-    .btn--primary   { background: #f59e0b; color: #09080a; }
-    .btn--secondary { background: #1e1b22; color: #e8e6ea; border: 1px solid #2e2a34; }
-
-    /* Error card */
-    .error-card {
-      background: #141218;
-      border: 1px solid #2e2a34;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .error-card__header {
-      padding: 0.625rem 1rem;
-      background: #1a1720;
-      border-bottom: 1px solid #2e2a34;
-      display: flex;
-      align-items: center;
-      gap: 0.625rem;
-    }
-
-    .error-badge {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      background: #450a0a;
-      color: #fca5a5;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-    }
-
-    .error-card__title {
-      font-size: 0.8rem;
-      color: #6b6573;
-    }
-
-    .error-card__body {
-      padding: 1rem;
-      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
-      font-size: 0.775rem;
-      line-height: 1.7;
-      color: #9d98a8;
-    }
-
-    .key   { color: #c084fc; }
-    .value { color: #e8e6ea; }
-    .fix   { color: #86efac; }
+    .btn--primary   { background: #f59e0b; color: #09080a }
+    .btn--secondary { background: #1e1b22; color: #e8e6ea; border: 1px solid #2e2a34 }
   </style>
 </head>
 <body>
   <div class="demo">
-    <div>
-      <p class="label">Component — correct props</p>
-      <div id="working"></div>
+    <div class="steps" id="steps"></div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress"></div>
     </div>
-    <div>
-      <p class="label">Component — wrong prop type</p>
-      <div id="error"></div>
+    <div class="panel">
+      <div class="panel-header">Agent</div>
+      <div class="panel-body"><pre id="agent-code"></pre></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Result</div>
+      <div class="panel-body" id="result-body"></div>
     </div>
   </div>
   <script type="module" src="./main.js"></script>
