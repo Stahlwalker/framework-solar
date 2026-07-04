@@ -60,6 +60,16 @@
       "apiKey": "phc_A7qBhuFQRAzULJr7wFZQUXMca2vX4VcRhWJLy2u9hVLX"
     }
   },
+  "redirects": [
+    {
+      "source": "/docs/roadmap",
+      "destination": "/docs/introduction"
+    },
+    {
+      "source": "/design-system",
+      "destination": "/docs/introduction"
+    }
+  ],
   "metadata": {
     "google-site-verification": "F0jF1S7A1b1h79tdEVEq_g7E9W6kr3vPvy58MTK3CxQ",
     "twitter:card": "summary_large_image",

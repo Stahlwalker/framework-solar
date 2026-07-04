@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /mintlify-assets/
+Disallow: /*.md$
 
 # AI crawlers — explicitly allowed
 User-agent: GPTBot
