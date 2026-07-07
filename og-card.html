@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1a1a; display: flex; flex-direction: column; align-items: center; padding: 32px; font-family: system-ui, sans-serif; }
+    canvas { display: block; border-radius: 8px; box-shadow: 0 0 0 1px rgba(255,255,255,0.08); }
+    button {
+      margin-top: 20px;
+      padding: 10px 24px;
+      background: #f59e0b;
+      color: #1a0f00;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover { opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <canvas id="og" width="1200" height="630"></canvas>
+  <button onclick="download()">Download og.png</button>
+
+  <script>
+    const canvas = document.getElementById('og')
+    const ctx = canvas.getContext('2d')
+    const W = 1200, H = 630
+
+    // Background
+    ctx.fillStyle = '#09080a'
+    ctx.fillRect(0, 0, W, H)
+
+    // Stars
+    for (let i = 0; i < 220; i++) {
+      const x = Math.random() * W
+      const y = Math.random() * H
+      const r = Math.random() * 1.3 + 0.2
+      const a = Math.random() * 0.6 + 0.1
+      ctx.beginPath()
+      ctx.arc(x, y, r, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(255,255,255,${a})`
+      ctx.fill()
+    }
+
+    // Dot grid (simulate with canvas)
+    const spacing = 36
+    ctx.fillStyle = 'rgba(245,158,11,0.12)'
+    for (let x = spacing / 2; x < W; x += spacing) {
+      for (let y = spacing / 2; y < H; y += spacing) {
+        // Fade toward bottom and edges with elliptical mask
+        const nx = (x / W) * 2 - 1
+        const ny = (y / H) * 2 - 1
+        const fade = Math.max(0, 1 - (nx * nx / 0.81 + ny * ny / 0.49))
+        if (fade <= 0) continue
+        ctx.globalAlpha = 0.13 * Math.sqrt(fade)
+        ctx.beginPath()
+        ctx.arc(x, y, 1, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
+    ctx.globalAlpha = 1
+
+    // Amber orb glow
+    const orb = ctx.createRadialGradient(W/2, -80, 0, W/2, -80, 420)
+    orb.addColorStop(0, 'rgba(245,158,11,0.18)')
+    orb.addColorStop(0.5, 'rgba(146,64,14,0.10)')
+    orb.addColorStop(1, 'rgba(9,8,10,0)')
+    ctx.fillStyle = orb
+    ctx.fillRect(0, 0, W, H)
+
+    // Orb
+    const ox = W/2, oy = 195, or_ = 36
+    const logoGrad = ctx.createRadialGradient(ox - 12, oy - 12, 0, ox, oy, or_)
+    logoGrad.addColorStop(0, '#fff8e1')
+    logoGrad.addColorStop(0.5, '#f59e0b')
+    logoGrad.addColorStop(1, '#78350f')
+    ctx.shadowColor = 'rgba(245,158,11,0.7)'
+    ctx.shadowBlur = 40
+    ctx.beginPath()
+    ctx.arc(ox, oy, or_, 0, Math.PI * 2)
+    ctx.fillStyle = logoGrad
+    ctx.fill()
+    ctx.shadowBlur = 0
+
+    // "Solar" — dominant
+    ctx.textAlign = 'center'
+    const solarGrad = ctx.createLinearGradient(W/2 - 220, 280, W/2 + 220, 360)
+    solarGrad.addColorStop(0, '#fff8e1')
+    solarGrad.addColorStop(1, '#f59e0b')
+    ctx.fillStyle = solarGrad
+    ctx.font = '700 110px system-ui, -apple-system, sans-serif'
+    ctx.fillText('Solar', W/2, 360)
+
+    // Subtitle
+    ctx.font = '400 22px system-ui, -apple-system, sans-serif'
+    ctx.fillStyle = 'rgba(240,237,232,0.38)'
+    ctx.fillText('UI for the age of AI-generated code', W/2, 408)
+
+    // Badge pill
+    const badgeText = 'solarbuild.dev'
+    ctx.font = '600 13px system-ui, -apple-system, sans-serif'
+    const badgeW = ctx.measureText(badgeText).width + 32
+    const badgeX = W/2 - badgeW/2, badgeY = 452
+    ctx.strokeStyle = 'rgba(245,158,11,0.25)'
+    ctx.fillStyle = 'rgba(245,158,11,0.08)'
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.roundRect(badgeX, badgeY, badgeW, 32, 16)
+    ctx.fill()
+    ctx.stroke()
+    ctx.fillStyle = 'rgba(245,158,11,0.7)'
+    ctx.fillText(badgeText, W/2, badgeY + 21)
+
+    function download() {
+      canvas.toBlob(blob => {
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = 'og.png'
+        a.click()
+      })
+    }
+  </script>
+</body>
+</html>
