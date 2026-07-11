@@ -95,7 +95,7 @@
 - [x] **Agent-focused quickstart:** a dedicated guide or section showing how an AI agent would use Solar (discover components via `registry.manifest()`, mount, handle errors)
 
 ### Discoverability & Ecosystem
-- [ ] **Submit to AI coding tool directories:** add Solar to Cursor rules directories, `.cursorrules` community lists, and Copilot extension ecosystems
+- [x] **Submit to AI coding tool directories:** published to Cursor Plugins (cursor.directory/plugins/framework-solar)
 - [ ] **List in MCP registries:** submit to MCP server/tool registries so agents can find Solar
 - [ ] **MCP server wrapping `registry.manifest()`:** expose Solar's component registry as an MCP tool so agents can introspect available components at runtime (bigger lift, high payoff for Solar's core value prop)
   - [ ] Create `solarbuild-mcp` package in monorepo
