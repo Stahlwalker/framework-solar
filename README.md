@@ -203,6 +203,8 @@ cd my-app
 npm run dev
 ```
 
+**Cursor plugin:** [cursor.directory/plugins/framework-solar](https://cursor.directory/plugins/framework-solar) — adds Solar rules to Cursor so your AI assistant knows the API out of the box.
+
 Or use the CDN directly. No install, no build step:
 
 ```html
