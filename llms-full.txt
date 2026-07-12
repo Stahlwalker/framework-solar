@@ -448,6 +448,8 @@ const context = registry.manifest()
 // pass as part of a system prompt, tool result, or MCP resource
 ```
 
+The registry is a shared global (keyed by `Symbol.for('solarbuild.registry')`), so all instances of Solar in the same Node.js process share one registry — regardless of which path they were imported from. This is what allows `solarbuild-mcp` to read the registry populated by user components.
+
 Example output:
 
 ```json

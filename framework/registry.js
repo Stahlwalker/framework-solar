@@ -1,6 +1,10 @@
 import { ContractError } from './contract/ContractError.js'
 
-const _components = new Map()
+// Use a global so all instances of Solar (regardless of import path) share one registry.
+// This lets solarbuild-mcp read the same registry that user components register into.
+const GLOBAL_KEY = Symbol.for('solarbuild.registry')
+if (!globalThis[GLOBAL_KEY]) globalThis[GLOBAL_KEY] = new Map()
+const _components = globalThis[GLOBAL_KEY]
 
 export const registry = {
   register(component) {

@@ -1,0 +1,25 @@
+{
+  "name": "solarbuild-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the Solar framework — exposes registry.manifest() as a callable tool so AI agents can introspect Solar components at runtime",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "solarbuild-mcp": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "loader.js"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.15.0",
+    "solarbuild": "file:../",
+    "zod": "^3.25.76"
+  },
+  "peerDependencies": {
+    "solarbuild": "*"
+  }
+}
