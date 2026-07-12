@@ -246,6 +246,31 @@ The demo covers all framework features: static rendering, diffing, hooks, contra
 
 ---
 
+## MCP Server
+
+`solarbuild-mcp` is an MCP server that exposes your Solar component registry as callable tools. AI agents can discover components, validate props, and self-correct at runtime — without reading static docs.
+
+```bash
+npm install solarbuild-mcp
+```
+
+```json
+{
+  "mcpServers": {
+    "solarbuild": {
+      "command": "npx",
+      "args": ["solarbuild-mcp", "--components", "./components"]
+    }
+  }
+}
+```
+
+**Tools:** `manifest` (full registry schema), `component` (single component schema), `validate` (props validation with fix instructions).
+
+→ [MCP Server docs](https://docs.solarbuild.dev/docs/integrations/mcp) · [npm](https://www.npmjs.com/package/solarbuild-mcp)
+
+---
+
 ## Docs
 
 Full documentation at [docs.solarbuild.dev](https://docs.solarbuild.dev)

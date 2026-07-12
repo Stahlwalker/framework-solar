@@ -96,14 +96,17 @@
 
 ### Discoverability & Ecosystem
 - [x] **Submit to AI coding tool directories:** published to Cursor Plugins (cursor.directory/plugins/framework-solar)
-- [ ] **List in MCP registries:** submit to MCP server/tool registries so agents can find Solar
+- [x] **List in MCP registries:** submit to MCP server/tool registries so agents can find Solar
+  - [x] Submitted to glama.ai/mcp/servers (pending review)
+  - [x] Submit to mcp.so (Solar MCP listed under Developer Tools)
 - [x] **MCP server wrapping `registry.manifest()`:** expose Solar's component registry as an MCP tool so agents can introspect available components at runtime (bigger lift, high payoff for Solar's core value prop)
   - [x] Create `solarbuild-mcp` package in monorepo
   - [x] Implement MCP server in Node.js exposing a `manifest` tool that imports user components, triggers `registry.register()`, and returns `registry.manifest()` output
   - [x] Add component discovery: user points server at a components directory or entry file via CLI flag
   - [x] Stretch: add `validate` tool (check props against a component schema) and `component` tool (get schema for one component by name)
   - [x] Publish as `solarbuild-mcp` to npm (mcp-v0.1.0)
-  - [ ] Submit to MCP registries so agents can find it (pairs with "List in MCP registries" item above)
+  - [x] Submit to MCP registries so agents can find it (pairs with "List in MCP registries" item above)
+- [x] **Add MCP Server component to Cursor plugin:** updated SOLAR Framework plugin to include MCP Server component (pending scan/publish)
 
 ### Content
 - [ ] **Technical blog posts:** write concrete developer content: "Using Solar with Claude", "Building agent UIs with Solar", "How Solar's registry.manifest() works"
