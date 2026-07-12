@@ -93,6 +93,18 @@ import { defineComponent, mountComponent, useState, createElement } from 'solarb
 
 ---
 
+## Cursor (AI editor)
+
+If you're using [Cursor](https://cursor.sh), install the Solar plugin to give your AI assistant built-in knowledge of the Solar API — components, hooks, contracts, and the agent workflow.
+
+1. Open the [SOLAR Framework plugin](https://cursor.directory/plugins/framework-solar) in Cursor Directory
+2. Click **Add to Cursor**
+3. Start a new chat — Cursor will automatically apply the Solar rules when working in `.js` files
+
+No config required. The plugin includes the full API reference, common patterns, and how to use `registry.manifest()` for agent-driven component discovery.
+
+---
+
 ## Project structure
 
 Solar enforces a rigid file structure so that generated components are always predictable:
