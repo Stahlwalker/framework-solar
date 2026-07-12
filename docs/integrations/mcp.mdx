@@ -1,0 +1,120 @@
+---
+title: "Solar MCP Server: Live Component Registry for AI Agents"
+sidebarTitle: "MCP Server"
+description: "solarbuild-mcp exposes your Solar component registry as callable MCP tools. AI agents can discover components, validate props, and self-correct errors at runtime — no static docs required."
+---
+
+`solarbuild-mcp` is an MCP server that exposes your Solar component registry as callable tools. Instead of reading static docs, agents can query your actual components at runtime — discovering their names, prop schemas, and valid values on demand.
+
+## Install
+
+```bash
+npm install solarbuild-mcp
+```
+
+## Configure
+
+Add to your MCP config (Cursor, Claude, Windsurf, or any MCP-compatible client):
+
+```json
+{
+  "mcpServers": {
+    "solarbuild": {
+      "command": "npx",
+      "args": ["solarbuild-mcp", "--components", "./components"]
+    }
+  }
+}
+```
+
+Point `--components` at the directory where your Solar components live.
+
+## Tools
+
+### `manifest`
+
+Returns the full component registry as JSON — all component names, prop types, required fields, enums, and defaults.
+
+```
+manifest(componentsPath: string) → JSON string
+```
+
+**Example output:**
+
+```json
+[
+  {
+    "name": "Button",
+    "props": {
+      "label": { "type": "string", "required": true },
+      "onClick": { "type": "function", "required": true },
+      "variant": { "type": "string", "enum": ["primary", "secondary"], "default": "primary" }
+    }
+  }
+]
+```
+
+Agents should call this before generating any component code. Never guess prop names or types.
+
+### `component`
+
+Returns the schema for a single component by name.
+
+```
+component(name: string) → JSON string
+```
+
+### `validate`
+
+Validates a props object against a component schema without mounting. Returns errors with `fix` instructions if props are invalid.
+
+```
+validate(name: string, props: object) → { valid: true } | { valid: false, errors: [...] }
+```
+
+**Example error response:**
+
+```json
+{
+  "valid": false,
+  "errors": [
+    {
+      "prop": "label",
+      "expected": "string",
+      "received": "number",
+      "fix": "Pass a string value for \"label\""
+    }
+  ]
+}
+```
+
+## Agent workflow
+
+The recommended pattern for an AI agent using Solar with MCP:
+
+1. Call `manifest` to discover available components and their schemas
+2. Generate component code using the correct prop types from the manifest
+3. Call `validate` to check props before mounting
+4. If validation fails, read the `fix` field on each error and correct the props
+5. Mount with confidence
+
+```js
+// Agent reads manifest first
+const components = JSON.parse(await mcp.call('manifest', { componentsPath: './components' }))
+
+// Agent generates props based on schema
+const props = { label: 'Submit', onClick: handleSubmit, variant: 'primary' }
+
+// Agent validates before mounting
+const result = await mcp.call('validate', { name: 'Button', props })
+if (!result.valid) {
+  // read result.errors[].fix and correct
+}
+
+// Mount
+mountComponent(Button, props, document.getElementById('app'))
+```
+
+## How it works
+
+`solarbuild-mcp` imports your component files, which self-register via `registry.register()` on import. It then reads from the same shared registry using `registry.manifest()`. The registry is a global singleton keyed by `Symbol.for('solarbuild.registry')`, so all Solar instances in the same process share one source of truth.

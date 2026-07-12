@@ -23,10 +23,15 @@ Solar runs entirely in the browser. Install via CDN or npm, define components wi
 - [Agent Quickstart](https://docs.solarbuild.dev/docs/guides/agent-quickstart): How an AI agent discovers components via `registry.manifest()`, mounts them, and handles ContractErrors
 - [Building a Site](https://docs.solarbuild.dev/docs/guides/building-a-site): End-to-end walkthrough covering routing, async data fetching, third-party library integration, and GitHub Pages deployment.
 
+## Integrations
+
+- [MCP Server](https://docs.solarbuild.dev/docs/integrations/mcp): solarbuild-mcp exposes your component registry as callable MCP tools — agents can discover components, validate props, and self-correct at runtime.
+
 ## npm Packages
 
 - [solarbuild](https://www.npmjs.com/package/solarbuild): The core framework. `npm install solarbuild`
 - [create-solarbuild](https://www.npmjs.com/package/create-solarbuild): Project scaffolder. `npm create solarbuild@latest my-app`
+- [solarbuild-mcp](https://www.npmjs.com/package/solarbuild-mcp): MCP server for Solar. `npm install solarbuild-mcp`
 
 ## Source
 
