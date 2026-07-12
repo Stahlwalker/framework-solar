@@ -1,6 +1,6 @@
 {
   "name": "solarbuild",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A runtime UI framework built for AI-generated code. Typed prop contracts, structured errors with fix instructions, and a machine-readable component registry.",
   "keywords": [
     "ui-framework",

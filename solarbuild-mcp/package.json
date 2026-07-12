@@ -16,10 +16,9 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.15.0",
-    "solarbuild": "file:../",
     "zod": "^3.25.76"
   },
   "peerDependencies": {
-    "solarbuild": "*"
+    "solarbuild": ">=0.2.3"
   }
 }

@@ -4,12 +4,14 @@ on:
   push:
     tags:
       - "v*"
+      - "mcp-v*"
 
 jobs:
-  release:
+  release-solarbuild:
+    if: startsWith(github.ref_name, 'v')
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # needed to create GitHub releases
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -18,8 +20,32 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Publish to NPM
+      - name: Publish solarbuild to NPM
         run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+
+  release-solarbuild-mcp:
+    if: startsWith(github.ref_name, 'mcp-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Publish solarbuild-mcp to NPM
+        run: npm publish --access public
+        working-directory: solarbuild-mcp
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
