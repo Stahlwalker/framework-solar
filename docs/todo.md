@@ -95,10 +95,10 @@
 - [x] **Agent-focused quickstart:** a dedicated guide or section showing how an AI agent would use Solar (discover components via `registry.manifest()`, mount, handle errors)
 
 ### Discoverability & Ecosystem
-- [x] **Submit to AI coding tool directories:** published to Cursor Plugins (cursor.directory/plugins/framework-solar)
 - [x] **List in MCP registries:** submit to MCP server/tool registries so agents can find Solar
-  - [x] Submitted to glama.ai/mcp/servers (pending review)
-  - [x] Submit to mcp.so (Solar MCP listed under Developer Tools)
+  - [x] Glama: https://glama.ai/mcp/servers/Stahlwalker/framework-solar
+  - [x] mcp.so: https://mcp.so/servers/solarbuild-mcp
+- [x] **Submit to AI coding tool directories:** published to Cursor Plugins https://cursor.directory/plugins/framework-solar
 - [x] **MCP server wrapping `registry.manifest()`:** expose Solar's component registry as an MCP tool so agents can introspect available components at runtime (bigger lift, high payoff for Solar's core value prop)
   - [x] Create `solarbuild-mcp` package in monorepo
   - [x] Implement MCP server in Node.js exposing a `manifest` tool that imports user components, triggers `registry.register()`, and returns `registry.manifest()` output
