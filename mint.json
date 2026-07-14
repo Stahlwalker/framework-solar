@@ -4,7 +4,8 @@
   "url": "https://docs.solarbuild.dev",
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "dark": "/logo/dark.svg",
+    "href": "/docs/introduction"
   },
   "favicon": "/favicon.svg",
   "colors": {
