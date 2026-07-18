@@ -74,6 +74,10 @@
     {
       "source": "/design-system",
       "destination": "/docs/introduction"
+    },
+    {
+      "source": "/docs/design-system",
+      "destination": "/docs/introduction"
     }
   ],
   "metadata": {
