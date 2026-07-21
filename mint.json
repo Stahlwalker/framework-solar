@@ -5,7 +5,7 @@
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg",
-    "href": "/docs/introduction"
+    "href": "/"
   },
   "favicon": "/favicon.svg",
   "colors": {
@@ -35,7 +35,7 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["docs/introduction", "docs/installation", "docs/use-cases"]
+      "pages": ["index", "docs/introduction", "docs/installation", "docs/use-cases"]
     },
     {
       "group": "Guides",
