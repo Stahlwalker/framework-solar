@@ -109,7 +109,7 @@
 - [x] **Add MCP Server component to Cursor plugin:** updated SOLAR Framework plugin to include MCP Server component (pending scan/publish)
 
 ### Content
-- [ ] **Technical blog posts:** write concrete developer content: "Using Solar with Claude", "Building agent UIs with Solar", "How Solar's registry.manifest() works"
+- [x] **Technical blog posts:** write concrete developer content: "Using Solar with Claude", "Building agent UIs with Solar", "How Solar's registry.manifest() works"
 
 ---
 
